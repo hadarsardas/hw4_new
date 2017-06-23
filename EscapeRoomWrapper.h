@@ -3,8 +3,10 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include "EscapeRoom.h"
 #include "Exceptions.h"
+#include "Enigma.h"
 
 
 namespace mtm{
@@ -12,7 +14,17 @@ namespace mtm{
 
         class EscapeRoomWrapper{
             EscapeRoom escapy;
+            std::vector<Enigma> riddles;
+
         public:
+            void addEnigma(const Enigma& enigma);
+
+            void removeEnigma(const Enigma& enigma);
+
+            Enimga getHardestEnigma();
+
+            vector<Enigma>& getAllEnigmas();
+
             // Constructs a new Escape Room with the specified data.
             //
             // @param name : the name of the escape room.
@@ -21,7 +33,8 @@ namespace mtm{
             // @param maxParticipants: the maximal participants allowed in the room.
             // The rest of the room's data is initialized as described in the exercise sheet.
             // @throws EscapeRoomMemoryProblemException in case of creation failure.
-            EscapeRoomWrapper(char* name, const int& escapeTime, const int& level, const int& maxParticipants);
+            EscapeRoomWrapper(char* name, const int& escapeTime,
+                              const int& level, const int& maxParticipants);
 
             // Constructs a new Escape Room with the specified data.
             //

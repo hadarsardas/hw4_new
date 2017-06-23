@@ -1,13 +1,41 @@
 #include "Enigma.h"
 
+
 using mtm::escaperoom::Enigma;
 using mtm::escaperoom::Difficulty;
 Enigma::Enigma(const std::string &name, const Difficulty &difficulty,
-               const int &numOfElements) {
+               const int &numOfElements, set<string> &elements) {
+    if(numOfElements!=elements.size()){
+        throw EnigmaIllegalSizeParamException;
+    }
     this->name=name;
     this->difficulty=difficulty;
     this->numOfElements=numOfElements;
+    this->elements=set(elements);
 }
+
+Enigma::Enigma(const std::string& name, const Difficulty& difficulty){
+    this->name=name;
+    this->difficulty=difficulty;
+    this->numOfElements=0;
+    this->elements=set();
+}
+void Enigma::addElement(const std::string& element){
+    elements.insert(element);
+    numOfElements++;
+}
+void Enigma::remove(const std::string& element){
+    if (elements.size()==0){
+        throw EnigmaNoElementsException;
+    }
+    set::iterator iterator=elements.find(element);
+    if (iterator==elements.end()){
+        throw EnigmaElementNotFoundException;
+    }
+    elements.erase(iterator);
+    numOfElements--;
+}
+
 Difficulty Enigma::getDifficulty() const {
     return difficulty;
 }
@@ -29,7 +57,7 @@ bool Enigma::operator<(const Enigma& enigma) const{
 }
 bool Enigma::areEqualyComplex(const Enigma &enigma) const {
     return (getDifficulty()==enigma.getDifficulty()) &&
-            ((numOfElements==enigma.numOfElements));
+           ((numOfElements==enigma.numOfElements));
 }
 
 std::ostream& mtm::escaperoom::operator<<(std::ostream &output, const Enigma &enigma) {

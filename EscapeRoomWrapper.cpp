@@ -1,14 +1,48 @@
 #include <iostream>
+#include <cstring>
 #include "EscapeRoomWrapper.h"
+#include <vector>
 
 using mtm::escaperoom::EscapeRoomWrapper;
+using mtm::escaperoom;
 
-EscapeRoomWrapper::EscapeRoomWrapper(char* name ,const int& escapeTime
-        ,const int& level,const int& maxParticipants){
-   escapy=escapeRoomCreate(name, escapeTime, maxParticipants, level);
+EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& escapeTime,
+                                     const int& level,
+                                     const int& maxParticipants){
+    escapy=escapeRoomCreate(name, escapeTime, maxParticipants, level);
     if (escapy==NULL){
         throw EscapeRoomMemoryProblemException();
     }
+}
+
+void EscapeRoomWrapper::addEnigma(const Enigma& enigma){
+    riddles.push_back(enigma);
+}
+
+void EscapeRoomWrapper::removeEnigma(const Enigma& enigma){
+    if (riddles.size()==0){
+        throw EscapeRoomNoEnigmasException;
+    }
+    if (std::find(riddles.begin(), riddles.end(), enigma) == riddles.end()){
+        throw EscapeRoomEnigmaNotFoundException;
+    }
+}
+
+Enimga EscapeRoomWrapper::getHardestEnigma(){
+    if (riddles.size()==0){
+        throw EscapeRoomNoEnigmasException;
+    }
+    Enigma max=riddles.begin();
+    for (std::vector<Enigma>::iterator it=riddles.begin();it!=riddles.end();it++){
+        if (it->getDifficulty()>max->getDifficulty()){
+            max=it;
+        }
+    }
+    return max;
+}
+
+vector<Enigma>& EscapeRoomWrapper::getAllEnigmas(){
+    return riddles;
 }
 
 EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& level){
@@ -39,7 +73,8 @@ EscapeRoomWrapper& EscapeRoomWrapper::operator=(const EscapeRoomWrapper& room){
 }
 
 bool EscapeRoomWrapper::operator==(const EscapeRoomWrapper &room) const {
-    return (areEqualRooms(this->escapy, room.escapy));
+    return (areEqualRooms(this->escapy, room.escapy) &&
+            strcmp(roomGetName(this->escapy), roomGetName(room.escapy))==0);
 }
 bool EscapeRoomWrapper::operator!=(const EscapeRoomWrapper &room) const {
     return !(*this==room);
@@ -48,8 +83,9 @@ bool EscapeRoomWrapper::operator>(const EscapeRoomWrapper &room) const {
     return (isBiggerRoom(this->escapy, room.escapy));
 }
 bool EscapeRoomWrapper::operator<(const EscapeRoomWrapper &room) const {
-    return isBiggerRoom(room.escapy,this->escapy);
+    return !(*this>room)&&!(*this==room);
 }
+
 int EscapeRoomWrapper::level() const{
     return getLevel(this->escapy);
 }
@@ -72,8 +108,7 @@ int EscapeRoomWrapper::getMaxTime() const{
 int EscapeRoomWrapper::getMaxParticipants() const {
     return roomGetMaxParticipants(this->escapy);
 }
-std::ostream& mtm::escaperoom::operator<<(std::ostream &output,
-                                          const EscapeRoomWrapper &room) {
-    return output << room.getName() << " (" << room.getMaxTime() << "/"
-                  << room.level() << "/" << room.getMaxParticipants()<< ")";
+
+std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room){
+    return output << getName() << level() << getMaxParticipants();
 }
