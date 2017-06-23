@@ -7,7 +7,7 @@
 #include "EscapeRoom.h"
 #include "Exceptions.h"
 #include "Enigma.h"
-
+using mtm::escaperoom::Enigma;
 namespace mtm{
     namespace escaperoom {
 

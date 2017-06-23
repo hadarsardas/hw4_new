@@ -2,6 +2,7 @@
 #include <cstring>
 #include "EscapeRoomWrapper.h"
 #include <vector>
+#include <algorithm>
 
 using mtm::escaperoom::EscapeRoomWrapper;
 using mtm::escaperoom::Enigma;
@@ -113,3 +114,4 @@ int EscapeRoomWrapper::getMaxParticipants() const {
 std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room){
     return output << room.getName() << room.level() << room.getMaxParticipants();
 }
+
