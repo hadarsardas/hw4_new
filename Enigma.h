@@ -20,7 +20,7 @@ namespace mtm{
             std::string name;
             Difficulty difficulty;
             int numOfElements;
-            set<string>& elements;
+            set<string> elements;
         public:
             Enigma(const std::string& name, const Difficulty& difficulty,
                    set<string> &elements);

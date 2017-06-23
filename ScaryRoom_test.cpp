@@ -21,7 +21,7 @@ static void ageLimit(){
     ASSERT_EQUALS(mtm.getMaxParticipants(),2);
     ASSERT_EQUALS(mtm.getName(), (char*)"MATAM");
     mtm.setNewAgeLimit(20);
-    ASSERT_EQUALS(mtm.getAgeLimit(),18);
+    ASSERT_EQUALS(mtm.getAgeLimit(),20);
     mtm.setNewAgeLimit(10);
     ASSERT_EQUALS(mtm.getAgeLimit(),10);
     ASSERT_THROWS(mtm::escaperoom::ScaryRoomIllegalAgeLimit,

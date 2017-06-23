@@ -14,7 +14,8 @@ EscapeRoomWrapper::EscapeRoomWrapper(char *name, const int &escapeTime,
     if (escapy==NULL){
         throw EscapeRoomMemoryProblemException();
     }
-    riddles=std::vector<Enigma>();
+    std::vector<Enigma> riddles;
+    this->riddles=riddles;
 }
 
 void EscapeRoomWrapper::addEnigma(const Enigma& enigma){

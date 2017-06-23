@@ -3,5 +3,5 @@ project(hw4_new)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES EscapeRoomWrapper.cpp EscapeRoom.c ScaryRoom.cpp ScaryRoom_test.cpp)
+set(SOURCE_FILES EscapeRoomWrapper.cpp EscapeRoom.c ScaryRoom.cpp ScaryRoom_test.cpp Enigma.cpp)
 add_executable(hw4_new ${SOURCE_FILES})

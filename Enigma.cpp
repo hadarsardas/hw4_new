@@ -15,7 +15,8 @@ Enigma::Enigma(const std::string &name, const Difficulty &difficulty,
     this->elements=set<string>(elements);
 }
 
-Enigma::Enigma(const std::string& name, const Difficulty& difficulty){
+Enigma::Enigma(const std::string& name, const Difficulty& difficulty,
+               set<string> &elements){
     this->name=name;
     this->difficulty=difficulty;
     this->numOfElements=0;
@@ -32,7 +33,7 @@ void Enigma::remove(const std::string& element){
     }
     set<string>::iterator iterator=elements.find(element);
     if (iterator==elements.end()){
-        throw mtm::escaperoom::Enigm;
+        throw mtm::escaperoom::EnigmaElementNotFundException();
     }
     elements.erase(iterator);
     numOfElements--;

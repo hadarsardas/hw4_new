@@ -14,7 +14,7 @@ namespace mtm{
         class EscapeRoomWrapper{
         protected:
             EscapeRoom escapy;
-            std::vector<Enigma>& riddles;
+            std::vector<Enigma> riddles;
 
         public:
             void addEnigma(const Enigma& enigma);
@@ -90,7 +90,7 @@ namespace mtm{
 
             //Function returns the name of the EscapeRoom.
             //
-            std::string getName() const;////////////???
+            std::string getName() const;
 
             //Function returns the rate of the EscapeRoom.
             //
