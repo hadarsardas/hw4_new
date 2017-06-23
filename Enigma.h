@@ -35,7 +35,7 @@ namespace mtm{
             // @param name : the name of the enigma.
             // @param difficulty : the difficulty of the enigma.
             // @param numOfElements : the number of elements in the enigma.
-            
+
             //copy constructor
             //
             //@param enigma : the enigma to be copied.
