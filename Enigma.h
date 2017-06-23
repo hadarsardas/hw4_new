@@ -24,6 +24,9 @@ namespace mtm{
         public:
             Enigma(const std::string& name, const Difficulty& difficulty,
                    set<string> &elements);
+
+            Enigma::Enigma(const std::string& name, const Difficulty& difficulty);
+            
             void addElement(const std::string& element);
 
             void remove(const std::string& element);

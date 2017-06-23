@@ -15,8 +15,7 @@ Enigma::Enigma(const std::string &name, const Difficulty &difficulty,
     this->elements=set<string>(elements);
 }
 
-Enigma::Enigma(const std::string& name, const Difficulty& difficulty,
-               set<string> &elements){
+Enigma::Enigma(const std::string& name, const Difficulty& difficulty){
     this->name=name;
     this->difficulty=difficulty;
     this->numOfElements=0;
