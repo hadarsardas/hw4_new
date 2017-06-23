@@ -4,12 +4,11 @@
 #include <vector>
 
 using mtm::escaperoom::EscapeRoomWrapper;
-using mtm::escaperoom;
+using mtm::escaperoom::Enigma;
 
-EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& escapeTime,
-                                     const int& level,
-                                     const int& maxParticipants){
-    escapy=escapeRoomCreate(name, escapeTime, maxParticipants, level);
+EscapeRoomWrapper::EscapeRoomWrapper(char *name, const int &escapeTime,
+                                     const int &level,
+                                     const int &maxParticipants) {
     if (escapy==NULL){
         throw EscapeRoomMemoryProblemException();
     }
@@ -21,34 +20,36 @@ void EscapeRoomWrapper::addEnigma(const Enigma& enigma){
 
 void EscapeRoomWrapper::removeEnigma(const Enigma& enigma){
     if (riddles.size()==0){
-        throw EscapeRoomNoEnigmasException;
+        throw mtm::escaperoom::EscapeRoomNoEnigmasException();
     }
-    if (std::find(riddles.begin(), riddles.end(), enigma) == riddles.end()){
-        throw EscapeRoomEnigmaNotFoundException;
+    if((std::find(riddles.begin(),riddles.end(),enigma))==riddles.end()){
+        throw mtm::escaperoom::EscapeRoomEnigmaNotFoundException();
     }
+    ////
 }
 
-Enimga EscapeRoomWrapper::getHardestEnigma(){
+Enigma EscapeRoomWrapper::getHardestEnigma(){
     if (riddles.size()==0){
-        throw EscapeRoomNoEnigmasException;
+        throw mtm::escaperoom::EscapeRoomNoEnigmasException();
     }
-    Enigma max=riddles.begin();
+    Enigma max=*(riddles.begin());
+    std::vector<Enigma>::iterator it=riddles.begin();
     for (std::vector<Enigma>::iterator it=riddles.begin();it!=riddles.end();it++){
-        if (it->getDifficulty()>max->getDifficulty()){
-            max=it;
+        if ((*it).getDifficulty() > max.getDifficulty()){
+            max=(*it);
         }
     }
     return max;
 }
 
-vector<Enigma>& EscapeRoomWrapper::getAllEnigmas(){
+std::vector<Enigma>& EscapeRoomWrapper::getAllEnigmas(){
     return riddles;
 }
 
 EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& level){
     escapy=escapeRoomCreate(name, 60, 6, level);
     if (escapy==NULL){
-        throw EscapeRoomMemoryProblemException();
+        throw mtm::escaperoom::EscapeRoomMemoryProblemException();
     }
 }
 
@@ -59,7 +60,7 @@ EscapeRoomWrapper::~EscapeRoomWrapper(){
 EscapeRoomWrapper::EscapeRoomWrapper(const EscapeRoomWrapper& room) {
     escapy=escapeRoomCopy(room.escapy);
     if (escapy==NULL){
-        throw EscapeRoomMemoryProblemException();
+        throw mtm::escaperoom::EscapeRoomMemoryProblemException();
     }
 }
 
@@ -92,7 +93,7 @@ int EscapeRoomWrapper::level() const{
 void EscapeRoomWrapper::rate(const int& newRate) const{
     RoomResult result=updateRate(this->escapy, newRate);
     if (result==ESCAPEROOM_BAD_PARAM || result==ESCAPEROOM_NULL_ARG){
-        throw EscapeRoomIllegalRateException();
+        throw mtm::escaperoom::EscapeRoomIllegalRateException();
     }
 }
 std::string EscapeRoomWrapper::getName() const{
@@ -110,5 +111,5 @@ int EscapeRoomWrapper::getMaxParticipants() const {
 }
 
 std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room){
-    return output << getName() << level() << getMaxParticipants();
+    return output << room.getName() << room.level() << room.getMaxParticipants();
 }

@@ -1,43 +1,44 @@
 #include "Enigma.h"
-
+#include "exceptions.h"
 
 using mtm::escaperoom::Enigma;
 using mtm::escaperoom::Difficulty;
+
 Enigma::Enigma(const std::string &name, const Difficulty &difficulty,
                const int &numOfElements, set<string> &elements) {
     if(numOfElements!=elements.size()){
-        throw EnigmaIllegalSizeParamException;
+        throw mtm::escaperoom::EnigmaIllegalSizeParamException();
     }
     this->name=name;
     this->difficulty=difficulty;
     this->numOfElements=numOfElements;
-    this->elements=set(elements);
+    this->elements=set<string>(elements);
 }
 
 Enigma::Enigma(const std::string& name, const Difficulty& difficulty){
     this->name=name;
     this->difficulty=difficulty;
     this->numOfElements=0;
-    this->elements=set();
+    this->elements=set<string>();
 }
+
 void Enigma::addElement(const std::string& element){
     elements.insert(element);
     numOfElements++;
 }
 void Enigma::remove(const std::string& element){
     if (elements.size()==0){
-        throw EnigmaNoElementsException;
+        throw mtm::escaperoom::EnigmaNoElementsException();
     }
-    set::iterator iterator=elements.find(element);
+    set<string>::iterator iterator=elements.find(element);
     if (iterator==elements.end()){
-        throw EnigmaElementNotFoundException;
+        throw mtm::escaperoom::EnigmaElementNotFundException();
     }
     elements.erase(iterator);
     numOfElements--;
 }
-
 Difficulty Enigma::getDifficulty() const {
-    return difficulty;
+    return this->difficulty;
 }
 string Enigma::getName() const {
     return name;

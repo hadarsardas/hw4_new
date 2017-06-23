@@ -69,6 +69,13 @@ void printTest(){
     ASSERT_PRINT("enigma2 (0) 8",Enigma2);
 }
 
+void printTest(){
+    Enigma Enigma1("enigma1",HARD_ENIGMA,6);
+    Enigma Enigma2("enigma2",EASY_ENIGMA,8);
+    ASSERT_PRINT("enigma1 (2) 6",Enigma1);
+    ASSERT_PRINT("enigma2 (0) 8",Enigma2);
+}
+
 
 int main() {
     RUN_TEST(testOperators);

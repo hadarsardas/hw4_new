@@ -8,11 +8,11 @@
 #include "Exceptions.h"
 #include "Enigma.h"
 
-
 namespace mtm{
     namespace escaperoom {
 
         class EscapeRoomWrapper{
+        protected:
             EscapeRoom escapy;
             std::vector<Enigma> riddles;
 
@@ -21,9 +21,9 @@ namespace mtm{
 
             void removeEnigma(const Enigma& enigma);
 
-            Enimga getHardestEnigma();
+            mtm::escaperoom::Enigma getHardestEnigma();
 
-            vector<Enigma>& getAllEnigmas();
+            std::vector<Enigma>& getAllEnigmas();
 
             // Constructs a new Escape Room with the specified data.
             //

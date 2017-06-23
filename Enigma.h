@@ -7,7 +7,6 @@
 
 using std::set;
 using std::string;
-using mtm::escaperoom;
 
 namespace mtm{
     namespace escaperoom{
@@ -21,11 +20,12 @@ namespace mtm{
             std::string name;
             Difficulty difficulty;
             int numOfElements;
-            set<sring>& elements;
+            set<string> elements;
         public:
             Enigma(const std::string& name, const Difficulty& difficulty);
-            void Enigma::addElement(const std::string& element);
+            void addElement(const std::string& element);
 
+            void remove(const std::string& element);
             // Constructs a new Enigma with the specified data.
             //
             // @param name : the name of the enigma.
