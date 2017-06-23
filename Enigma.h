@@ -20,9 +20,10 @@ namespace mtm{
             std::string name;
             Difficulty difficulty;
             int numOfElements;
-            set<string> elements;
+            set<string>& elements;
         public:
-            Enigma(const std::string& name, const Difficulty& difficulty);
+            Enigma(const std::string& name, const Difficulty& difficulty,
+                   set<string> &elements);
             void addElement(const std::string& element);
 
             void remove(const std::string& element);

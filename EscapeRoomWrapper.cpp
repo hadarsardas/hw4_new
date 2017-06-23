@@ -10,9 +10,11 @@ using mtm::escaperoom::Enigma;
 EscapeRoomWrapper::EscapeRoomWrapper(char *name, const int &escapeTime,
                                      const int &level,
                                      const int &maxParticipants) {
+    escapy=escapeRoomCreate(name, escapeTime, maxParticipants, level);
     if (escapy==NULL){
         throw EscapeRoomMemoryProblemException();
     }
+    riddles=std::vector<Enigma>();
 }
 
 void EscapeRoomWrapper::addEnigma(const Enigma& enigma){
@@ -114,4 +116,3 @@ int EscapeRoomWrapper::getMaxParticipants() const {
 std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room){
     return output << room.getName() << room.level() << room.getMaxParticipants();
 }
-

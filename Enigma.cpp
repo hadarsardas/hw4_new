@@ -32,7 +32,7 @@ void Enigma::remove(const std::string& element){
     }
     set<string>::iterator iterator=elements.find(element);
     if (iterator==elements.end()){
-        throw mtm::escaperoom::EnigmaElementNotFundException();
+        throw mtm::escaperoom::Enigm;
     }
     elements.erase(iterator);
     numOfElements--;
