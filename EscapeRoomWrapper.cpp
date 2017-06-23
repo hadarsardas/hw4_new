@@ -58,6 +58,7 @@ EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& level){
 
 EscapeRoomWrapper::~EscapeRoomWrapper(){
     escapeRoomDestroy(this->escapy);
+    this;
 }
 
 EscapeRoomWrapper::EscapeRoomWrapper(const EscapeRoomWrapper& room) {
