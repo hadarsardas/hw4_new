@@ -26,10 +26,11 @@ void EscapeRoomWrapper::removeEnigma(const Enigma& enigma){
     if (riddles.size()==0){
         throw mtm::escaperoom::EscapeRoomNoEnigmasException();
     }
-    if((std::find(riddles.begin(),riddles.end(),enigma))==riddles.end()){
+    std::vector<Enigma>::iterator it=(std::find(riddles.begin(),riddles.end(),enigma));
+    if(it==riddles.end()){
         throw mtm::escaperoom::EscapeRoomEnigmaNotFoundException();
     }
-    ////
+    riddles.erase(it);
 }
 
 Enigma EscapeRoomWrapper::getHardestEnigma(){
