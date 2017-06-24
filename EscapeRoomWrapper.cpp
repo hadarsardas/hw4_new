@@ -115,6 +115,11 @@ int EscapeRoomWrapper::getMaxParticipants() const {
     return roomGetMaxParticipants(this->escapy);
 }
 
-std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room){
-    return output << room.getName() << room.level() << room.getMaxParticipants();
+std::ostream& mtm::escaperoom::operator<<(std::ostream& output,
+                                          const EscapeRoomWrapper& room){
+    return room.print(output);
+}
+std::ostream& EscapeRoomWrapper::print(std::ostream &output) const {
+    return output << getName() << " (" <<getMaxTime()<<"/" << level() <<"/"<<
+                  getMaxParticipants() << ") ";
 }

@@ -14,8 +14,15 @@ Company::~Company() {
 }
 void Company::createRoom(char *name, const int &escapeTime, const int &level,
                          const int &maxParticipants) {
-    EscapeRoomWrapper* room_ptr= new EscapeRoomWrapper(name,escapeTime,level,
-                                                       maxParticipants);
+    EscapeRoomWrapper *room_ptr=NULL;
+    try {
+        room_ptr = new EscapeRoomWrapper(name, escapeTime,
+                                                            level,
+                                                            maxParticipants);
+    }
+    catch (EscapeRoomMemoryProblemException){
+        throw CompanyMemoryProblemException();
+    }
     rooms.insert(room_ptr);
 }
 void Company::createScaryRoom(char *name, const int &escapeTime,
@@ -31,7 +38,7 @@ void Company::createKidsRoom(char *name, const int &escapeTime,
                              const int &level, const int &maxParticipants,
                              const int &ageLimit) {
     EscapeRoomWrapper* kids_ptr=
-            new kidsRoom(name,escapeTime,level,maxParticipants,ageLimit);
+            new KidsRoom(name,escapeTime,level,maxParticipants,ageLimit);
     rooms.insert(kids_ptr);
 }
 set<mtm::escaperoom::EscapeRoomWrapper*> Company::getAllRooms() const {
@@ -71,7 +78,7 @@ void Company::removeEnigma(const EscapeRoomWrapper &room,
             try {
                 (*it)->removeEnigma(enigma);
             } catch (EscapeRoomNoEnigmasException){
-                throw EscapeRoomNoEnigmasException();
+                throw CompanyRoomHasNoEnigmasException();
             }catch (EscapeRoomEnigmaNotFoundException){
                 throw CompanyRoomEnigmaNotFoundException();
             }
@@ -108,7 +115,15 @@ void Company::removeItem(const EscapeRoomWrapper &room, const Enigma &enigma,
                          riddle_it=((*it)->getAllEnigmas().begin());
                  riddle_it!=((*it)->getAllEnigmas().end());riddle_it++){
                 if ((*riddle_it)==enigma){
-                    (*riddle_it).removeElement(element);
+                    try{
+                        (*riddle_it).removeElement(element);
+                    }
+                    catch (EnigmaNoElementsException){
+                        throw CompanyRoomEnigmaHasNoElementsException();
+                    }
+                    catch (EnigmaElementNotFundException){
+                        throw CompanyRoomEnigmaElementNotFoundException();
+                    }
                     return;
                 }
             }
@@ -126,7 +141,7 @@ set<EscapeRoomWrapper*> Company::getAllRoomsByType(RoomType type) const {
             setRoom.insert(*it);
         }
         else if ((type==KIDS_ROOM)&&
-                     (typeid((**it)).name()== typeid(kidsRoom).name())) {
+                     (typeid((**it)).name()== typeid(KidsRoom).name())) {
             setRoom.insert(*it);
         }
         else if((type==BASE_ROOM)&&
@@ -156,8 +171,8 @@ Company::Company(const Company &company) {
         if (typeid(*it).name()== typeid(ScaryRoom).name()){
             new_room=new ScaryRoom(*(ScaryRoom*)*it);
         }
-        else if (typeid(*it).name()== typeid(kidsRoom).name()){
-            new_room=new kidsRoom(*(kidsRoom*)*it);
+        else if (typeid(*it).name()== typeid(KidsRoom).name()){
+            new_room=new KidsRoom(*(KidsRoom*)*it);
         }
         else if (typeid(*it).name()== typeid(EscapeRoomWrapper).name()){
             new_room=new EscapeRoomWrapper(**it);
@@ -173,13 +188,30 @@ Company& Company::operator=(const Company &company) {
         it++){
         delete (*it);
     }
-
+    std::set<EscapeRoomWrapper*> new_rooms;
+    for(std::set<EscapeRoomWrapper*>::iterator it=company.rooms.begin();
+        it!=company.rooms.end(); it++){
+        EscapeRoomWrapper* new_room=NULL;
+        if (typeid(*it).name()== typeid(ScaryRoom).name()){
+            new_room=new ScaryRoom(*(ScaryRoom*)*it);
+        }
+        else if (typeid(*it).name()== typeid(KidsRoom).name()){
+            new_room=new KidsRoom(*(KidsRoom*)*it);
+        }
+        else if (typeid(*it).name()== typeid(EscapeRoomWrapper).name()){
+            new_room=new EscapeRoomWrapper(**it);
+        }
+        rooms.insert(new_room);
+    }
+    name=company.name;
+    phoneNumber=company.phoneNumber;
+    return *this;
 }
-std::ostream& mtm::escaperoom::operator<<(std::ostream& output, const Company& company) {
-    output<<company.name << ":" << company.phoneNumber<< std::endl;
-    for(std::set<EscapeRoomWrapper*>::iterator it=company.rooms.begin();it!=company.rooms.end();
-        it++) {
-         output<< (*it);
+std::ostream &
+::mtm::escaperoom::operator<<(std::ostream &output, const Company &company) {
+    output<<company.name << " : " << company.phoneNumber<< std::endl;
+    for (auto &&room : company.rooms) {
+        output << (*room) << std::endl;
     }
     return output;
 }

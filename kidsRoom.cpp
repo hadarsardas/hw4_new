@@ -3,24 +3,28 @@
 
 
 
-kidsRoom::kidsRoom(char *name, const int &escapeTime, const int &level,
+KidsRoom::KidsRoom(char *name, const int &escapeTime, const int &level,
                    const int &maxParticipants, const int &ageLimit):
         EscapeRoomWrapper(name,escapeTime,level,maxParticipants),
         ageLimit(ageLimit) {}
 
-int kidsRoom::getAgeLimit() const {
+int KidsRoom::getAgeLimit() const {
     return ageLimit;
 }
 
-void kidsRoom::setNewAgeLimit(const int &limit) {
+void KidsRoom::setNewAgeLimit(const int &limit) {
     if (limit<0){
         throw mtm::escaperoom::ScaryRoomIllegalAgeLimit();
     }
     ageLimit=limit;
 }
+std::ostream& operator<<(std::ostream& output, const KidsRoom& room){
+    return room.print(output);
+}
 
-std::ostream& operator<<(std::ostream& output, const kidsRoom& room){
-    return output<<"Kids Room: "<< room.getName() <<" (" << room.getMaxTime()
-                 << "/"<< room.level() <<"/" << room.getMaxParticipants()
-                 << "/" << room.getAgeLimit()<< ")";
+
+std::ostream& KidsRoom::print(std::ostream &output) const {
+    return output<<"Kids Room: "<< getName() <<" (" << getMaxTime()
+                 << "/"<< level() <<"/" << getMaxParticipants()
+                 << "/" << getAgeLimit()<< ")";
 }

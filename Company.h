@@ -145,7 +145,7 @@ namespace mtm{
             ~Company();
         };
 
-        std::ostream& operator<<(std::ostream& output, const Company& company);
+        std::ostream &operator<<(std::ostream &output, const Company &company);
     }
 }
 

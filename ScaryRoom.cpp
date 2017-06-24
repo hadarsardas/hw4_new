@@ -20,8 +20,14 @@ ScaryRoom::ScaryRoom(char *name, const int &escapeTime, const int &level,
         EscapeRoomWrapper(name,escapeTime,level,maxParticipants),
         ageLimit(ageLimit),numOfScaryEnigmas(numOfScaryEnigmas) {}
 
+
+
 std::ostream& operator<<(std::ostream& output, const ScaryRoom& room){
-    return output<<"ScaryRoom: "<< room.getName() <<" ("<< room.getMaxTime() <<
-                 "/" << room.level() <<"/" << room.getMaxParticipants() << "/"
-                 << room.getAgeLimit()<< ")";
+    return room.print(output);
+}
+
+std::ostream& ScaryRoom::print(std::ostream &output) const {
+    return output<<"Scary Room: "<< getName() <<" ("<< getMaxTime() <<
+                 "/" << level() <<"/" << getMaxParticipants() << "/"
+                 << getAgeLimit()<< ")";
 }

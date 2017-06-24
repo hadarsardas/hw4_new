@@ -88,6 +88,8 @@ namespace mtm{
             // @param room : the room whose data is printed.
             friend std::ostream& operator<<(std::ostream& output, const EscapeRoomWrapper& room);
 
+            virtual std::ostream& print(std::ostream& output) const;
+
             //Function returns the name of the EscapeRoom.
             //
             std::string getName() const;

@@ -1,22 +1,25 @@
 #ifndef HW4_NEW_KIDSROOM_H
 #define HW4_NEW_KIDSROOM_H
 #include "EscapeRoomWrapper.h"
+#include <iostream>
 
-class kidsRoom : public mtm::escaperoom::EscapeRoomWrapper {
+
+class KidsRoom : public mtm::escaperoom::EscapeRoomWrapper {
     int ageLimit;
 public:
-    kidsRoom(char* name, const int& escapeTime, const int& level,
+    KidsRoom(char* name, const int& escapeTime, const int& level,
              const int& maxParticipants, const int& ageLimit);
 
-    kidsRoom(const kidsRoom& kids)=default;
+    KidsRoom(const KidsRoom& kids)=default;
 
     void setNewAgeLimit(const int& limit);
 
     int getAgeLimit() const;
 
-    friend std::ostream& operator<<(std::ostream& output, const kidsRoom& room);
+    friend std::ostream& operator<<(std::ostream& output, const KidsRoom& room);
+
+    std::ostream& print(std::ostream &output) const override ;
 };
 
-std::ostream& operator<<(std::ostream& output, const kidsRoom& room);
-
+std::ostream& operator<<(std::ostream& output, const KidsRoom& room) ;
 #endif //HW4_NEW_KIDSROOM_H

@@ -20,6 +20,8 @@ public:
     int getAgeLimit() const;
 
     friend std::ostream& operator<<(std::ostream& output, const ScaryRoom& room);
+
+    std::ostream& print(std::ostream &output) const override;
 };
 std::ostream& operator<<(std::ostream& output, const ScaryRoom& room);
 
