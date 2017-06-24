@@ -26,7 +26,7 @@ void Enigma::addElement(const std::string& element){
     elements.insert(element);
     numOfElements++;
 }
-void Enigma::remove(const std::string& element){
+void Enigma::removeElement(const std::string& element){
     if (elements.size()==0){
         throw mtm::escaperoom::EnigmaNoElementsException();
     }

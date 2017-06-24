@@ -11,6 +11,8 @@ public:
               const int &maxParticipants, const int &ageLimit,
               const int &numOfScaryEnigmas);
 
+    ScaryRoom(const ScaryRoom& scary)=default;
+
     void setNewAgeLimit(const int &limit);
 
     void incNumberOfScaryEnigmas();

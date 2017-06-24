@@ -8,6 +8,8 @@ public:
     kidsRoom(char* name, const int& escapeTime, const int& level,
              const int& maxParticipants, const int& ageLimit);
 
+    kidsRoom(const kidsRoom& kids)=default;
+
     void setNewAgeLimit(const int& limit);
 
     int getAgeLimit() const;

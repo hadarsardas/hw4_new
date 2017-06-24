@@ -7,6 +7,7 @@
 #include "Enigma.h"
 #include "ScaryRoom.h"
 #include "kidsRoom.h"
+#include <typeinfo.h>
 using std::set;
 using std::string;
 

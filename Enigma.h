@@ -29,7 +29,7 @@ namespace mtm{
 
             void addElement(const std::string& element);
 
-            void remove(const std::string& element);
+            void removeElement(const std::string& element);
             // Constructs a new Enigma with the specified data.
             //
             // @param name : the name of the enigma.
