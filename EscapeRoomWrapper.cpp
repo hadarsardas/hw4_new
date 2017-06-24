@@ -59,7 +59,7 @@ EscapeRoomWrapper::EscapeRoomWrapper(char* name, const int& level){
 }
 
 EscapeRoomWrapper::~EscapeRoomWrapper(){
-    escapeRoomDestroy(this->escapy);
+    escapeRoomDestroy(escapy);
 }
 
 EscapeRoomWrapper::EscapeRoomWrapper(const EscapeRoomWrapper& room) {
@@ -80,7 +80,7 @@ EscapeRoomWrapper& EscapeRoomWrapper::operator=(const EscapeRoomWrapper& room){
 
 bool EscapeRoomWrapper::operator==(const EscapeRoomWrapper &room) const {
     return (areEqualRooms(this->escapy, room.escapy) &&
-            strcmp(roomGetName(this->escapy), roomGetName(room.escapy))==0);
+            this->getName() ==room.getName());
 }
 bool EscapeRoomWrapper::operator!=(const EscapeRoomWrapper &room) const {
     return !(*this==room);
@@ -89,7 +89,7 @@ bool EscapeRoomWrapper::operator>(const EscapeRoomWrapper &room) const {
     return (isBiggerRoom(this->escapy, room.escapy));
 }
 bool EscapeRoomWrapper::operator<(const EscapeRoomWrapper &room) const {
-    return !(*this>room)&&!(*this==room);
+    return (isBiggerRoom(room.escapy, this->escapy));
 }
 
 int EscapeRoomWrapper::level() const{
@@ -102,8 +102,10 @@ void EscapeRoomWrapper::rate(const int& newRate) const{
     }
 }
 std::string EscapeRoomWrapper::getName() const{
-    std::string str(roomGetName(this->escapy));
-    return str;
+    char* room_name=roomGetName(escapy);
+    std::string name_str(room_name);
+    free(room_name);
+    return name_str;
 }
 double EscapeRoomWrapper::getRate() const{
     return roomGetRate(this->escapy);
@@ -121,5 +123,5 @@ std::ostream& mtm::escaperoom::operator<<(std::ostream& output,
 }
 std::ostream& EscapeRoomWrapper::print(std::ostream &output) const {
     return output << getName() << " (" <<getMaxTime()<<"/" << level() <<"/"<<
-                  getMaxParticipants() << ") ";
+                  getMaxParticipants() << ")";
 }

@@ -110,8 +110,8 @@ template<class T>
 bool List<T>::Iterator::operator==(const Iterator &iteratorPosition) const {
     return (((iteratorPosition.current==linked_list->tail)&&
              (current==linked_list->tail))
-            ||((iteratorPosition.linked_list==this->linked_list))&&
-              (iteratorPosition.current)==(current));
+            ||(((iteratorPosition.linked_list==this->linked_list))&&
+              (iteratorPosition.current)==(current)));
 }
 template<class T>
 bool List<T>::Iterator::operator!=(const Iterator& iteratorPosition)const {
@@ -165,7 +165,10 @@ void List<T>::insert(const T &data, Iterator iterator) {
         head=temp;
         size++;
     }
-    else {
+    else if (iterator==end()){
+        insert(data);
+    }
+    else{
         node* temp= new node(data, iterator.current->previous, iterator.current);
         iterator.current->previous->next=temp;
         iterator.current->previous=temp;

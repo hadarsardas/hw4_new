@@ -1,7 +1,7 @@
 /** Created by Dennis on 18-Jun-17.
 **/
-#include "mtmtest.h"
-#include "Enigma.h"
+#include "../mtmtest.h"
+#include "../Enigma.h"
 using namespace std;
 
 using namespace mtm::escaperoom;

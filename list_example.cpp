@@ -1,6 +1,6 @@
 #include <functional>
-#include "list.h"
-#include "mtmtest.h"
+#include "../list.h"
+#include "../mtmtest.h"
 
 /**
  * Function object for finding a target integer

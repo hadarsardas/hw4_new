@@ -16,8 +16,7 @@ void Company::createRoom(char *name, const int &escapeTime, const int &level,
                          const int &maxParticipants) {
     EscapeRoomWrapper *room_ptr=NULL;
     try {
-        room_ptr = new EscapeRoomWrapper(name, escapeTime,
-                                                            level,
+        room_ptr = new EscapeRoomWrapper(name, escapeTime, level,
                                                             maxParticipants);
     }
     catch (EscapeRoomMemoryProblemException){
@@ -30,8 +29,8 @@ void Company::createScaryRoom(char *name, const int &escapeTime,
                               const int &ageLimit,
                               const int &numOfScaryEnigmas) {
     EscapeRoomWrapper* scary_ptr= new ScaryRoom(name,escapeTime,level,
-                                                maxParticipants,
-                                                ageLimit,numOfScaryEnigmas);
+                                                maxParticipants, ageLimit,
+                                                numOfScaryEnigmas);
     rooms.insert(scary_ptr);
 }
 void Company::createKidsRoom(char *name, const int &escapeTime,
@@ -51,12 +50,14 @@ void Company::removeRoom(const EscapeRoomWrapper &room) {
     for(std::set<EscapeRoomWrapper*>::iterator it=rooms.begin();it!=rooms.end();
         it++){
         if(**it==room){
-            rooms.erase(it);
+            delete *it;
+            rooms.erase(*it);
             return;
         }
     }
     throw CompanyRoomNotFoundException();
 }
+
 void Company::addEnigma(const EscapeRoomWrapper &room, const Enigma &enigma) {
     for(std::set<EscapeRoomWrapper*>::iterator it=rooms.begin();it!=rooms.end();
         it++){
@@ -110,7 +111,7 @@ void Company::removeItem(const EscapeRoomWrapper &room, const Enigma &enigma,
                          const string &element) {
     for(std::set<EscapeRoomWrapper*>::iterator it=rooms.begin();it!=rooms.end();
         it++){
-        if ((**it)==room){
+        if ((*(EscapeRoomWrapper*)(*it))==room){
             for (std::vector<Enigma>::iterator
                          riddle_it=((*it)->getAllEnigmas().begin());
                  riddle_it!=((*it)->getAllEnigmas().end());riddle_it++){

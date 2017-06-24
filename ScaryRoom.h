@@ -1,4 +1,4 @@
-#ifndef HW4_NEW_SCARYROOM_H
+    #ifndef HW4_NEW_SCARYROOM_H
 #define HW4_NEW_SCARYROOM_H
 #include "EscapeRoomWrapper.h"
 

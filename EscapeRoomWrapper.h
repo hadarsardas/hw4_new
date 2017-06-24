@@ -78,7 +78,7 @@ namespace mtm{
             void rate(const int& newRate) const;
 
             // Destructor for EscapeRoomWrapper
-            ~EscapeRoomWrapper();
+            virtual ~EscapeRoomWrapper();
 
             // Prints the data of the Room in the following format:
             //
