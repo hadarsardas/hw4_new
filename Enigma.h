@@ -22,7 +22,11 @@ namespace mtm{
             int numOfElements;
             set<string> elements;
         public:
+            Enigma(const std::string &name, const Difficulty &difficulty,
+                   const int &numOfElements, set<string> &elements);
+
             Enigma(const std::string& name, const Difficulty& difficulty);
+
             void addElement(const std::string& element);
 
             void remove(const std::string& element);
@@ -31,8 +35,6 @@ namespace mtm{
             // @param name : the name of the enigma.
             // @param difficulty : the difficulty of the enigma.
             // @param numOfElements : the number of elements in the enigma.
-            Enigma(const std::string& name, const Difficulty& difficulty,
-                   const int& numOfElements, set<string> &elements);
 
             //copy constructor
             //

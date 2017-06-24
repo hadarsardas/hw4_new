@@ -90,7 +90,7 @@ namespace mtm{
 
             //Function returns the name of the EscapeRoom.
             //
-            std::string getName() const;////////////???
+            std::string getName() const;
 
             //Function returns the rate of the EscapeRoom.
             //

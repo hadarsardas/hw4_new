@@ -65,4 +65,3 @@ std::ostream& mtm::escaperoom::operator<<(std::ostream &output, const Enigma &en
     return output<<enigma.getName() <<" ("
                  <<enigma.getDifficulty() << ") " <<enigma.numOfElements;
 }
-

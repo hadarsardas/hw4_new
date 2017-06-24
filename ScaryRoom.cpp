@@ -1,6 +1,6 @@
 #include "ScaryRoom.h"
 
-int ScaryRoom::getAgeLimit() {
+int ScaryRoom::getAgeLimit() const {
     return ageLimit;
 }
 void ScaryRoom::incNumberOfScaryEnigmas() {
@@ -9,22 +9,19 @@ void ScaryRoom::incNumberOfScaryEnigmas() {
 
 void ScaryRoom::setNewAgeLimit(const int &limit) {
     if (limit<0){
-        throw ScaryRoomIllegalAgeLimit;
+        throw mtm::escaperoom::ScaryRoomIllegalAgeLimit();
     }
     ageLimit=limit;
 }
 
 ScaryRoom::ScaryRoom(char *name, const int &escapeTime, const int &level,
                      const int &maxParticipants, const int &ageLimit,
-                     const int &numOfScaryEnigmas): {
-    EscapeRoomWrapper(name, escapeTime, level, maxParticipants);
-    this->ageLimit;
-    this->numOfScaryEnigmas=numOfScaryEnigmas;
-}
+                     const int &numOfScaryEnigmas):
+        EscapeRoomWrapper(name,escapeTime,level,maxParticipants),
+        ageLimit(ageLimit),numOfScaryEnigmas(numOfScaryEnigmas) {}
 
-std::ostream& ScaryRoom::operator<<(std::ostream &output,
-                                    const ScaryRoom &room) {
+std::ostream& operator<<(std::ostream& output, const ScaryRoom& room){
     return output<<"ScaryRoom: "<< room.getName() <<" ("<< room.getMaxTime() <<
                  "/" << room.level() <<"/" << room.getMaxParticipants() << "/"
-                 << room. getAgeLimit()<< ")";
+                 << room.getAgeLimit()<< ")";
 }
