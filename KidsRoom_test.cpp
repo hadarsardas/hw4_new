@@ -2,13 +2,13 @@
 #include "mtmtest.h"
 
 static void makeRooms(){
-    kidsRoom bob=kidsRoom((char*)"SpongeBob", 60, 10, 7, 10);
+    KidsRoom bob=KidsRoom((char*)"SpongeBob", 60, 10, 7, 10);
     ASSERT_EQUALS(bob.getMaxTime(), 60);
     ASSERT_EQUALS(bob.getAgeLimit(),10 );
     ASSERT_EQUALS(bob.getMaxParticipants(),7);
     ASSERT_EQUALS(bob.level(), 10);
     ASSERT_EQUALS(bob.getName(), (char*)"SpongeBob");
-    kidsRoom frozen=kidsRoom((char*)"Frozen", 70, 5, 8, 6);
+    KidsRoom frozen=KidsRoom((char*)"Frozen", 70, 5, 8, 6);
     ASSERT_EQUALS(frozen.getMaxTime(), 70);
     ASSERT_EQUALS(frozen.getAgeLimit(),6 );
     ASSERT_EQUALS(frozen.getMaxParticipants(),8);
@@ -17,7 +17,7 @@ static void makeRooms(){
 }
 
 static void ageLimit(){
-    kidsRoom lion=kidsRoom((char*)"Lion King", 90, 10, 2, 5);
+    KidsRoom lion=KidsRoom((char*)"Lion King", 90, 10, 2, 5);
     ASSERT_EQUALS(lion.getMaxTime(), 90);
     ASSERT_EQUALS(lion.getAgeLimit(),5);
     ASSERT_EQUALS(lion.getMaxParticipants(),2);
@@ -33,7 +33,7 @@ static void ageLimit(){
     ASSERT_EQUALS(lion.getAgeLimit(),0);
 }
 static void rateCheck(){
-    kidsRoom Nemo=kidsRoom((char*)"Nemo", 30, 8, 6, 10);
+    KidsRoom Nemo=KidsRoom((char*)"Nemo", 30, 8, 6, 10);
     Nemo.rate(5);
     ASSERT_EQUALS(Nemo.getRate(), 5);
     Nemo.rate(2);
@@ -47,9 +47,9 @@ static void rateCheck(){
 }
 
 static void prinCheck(){
-    kidsRoom Stitch=kidsRoom((char*)"Stitch", 60, 7, 4, 10);
+    KidsRoom Stitch=KidsRoom((char*)"Stitch", 60, 7, 4, 10);
     ASSERT_PRINT("Kids Room: Stitch (60/7/4/10)", Stitch);
-    kidsRoom lilo=kidsRoom((char*)"Lilo", 60, 8, 3, 12);
+    KidsRoom lilo=KidsRoom((char*)"Lilo", 60, 8, 3, 12);
     ASSERT_PRINT("Kids Room: Lilo (60/8/3/12)", lilo);
 }
 
