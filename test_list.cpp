@@ -158,7 +158,7 @@ static void listSize(){
     List<int>::Iterator it=list.begin();
     for(int i=0;i<9;i++){
         list.remove(it);
-        it++;
+        it=list.begin()++;
     }
     ASSERT_EQUALS(list.getSize(),90);
 }
@@ -247,6 +247,8 @@ static void listSort(){
     ASSERT_TRUE(*it1=="a");
     ++++++++++it1;
     ASSERT_TRUE(*it1=="f");
+    ++++++++++it1;
+    ASSERT_TRUE(*it1=="k");
 }
 
 
