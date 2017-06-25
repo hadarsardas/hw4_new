@@ -1,26 +1,17 @@
-//
-// Created by masha on 20-Jun-17.
-//
-#include <iostream>
-#include <cmath>
-#include "mtmtest.h"
+#include <functional>
 #include "list.h"
-
+#include "Exceptions.h"
+#include "mtmtest.h"
+#include <cstring>
 using std::string;
-using std::to_string;
-using std::cout;
-using std::endl;
-using mtm::ListExceptions::ElementNotFound;
 
-
-class EqualTo {
+class SameAs {
 private:
     int target;
     string str;
 public:
-    EqualTo(int i) : target(i) {}
-    EqualTo(string str) : str(str) {}
-
+    SameAs(int i) : target(i) {}
+    SameAs(string str) : str(str) {}
     bool operator()(const int &i) const {
         return i == target;
     }
@@ -30,425 +21,243 @@ public:
 };
 
 
-/**
- * Use to add @param num_of_elem to List<string>
- * @param func "sin" or "cos", use to make different lists
- */
-void addToListString(List<string> &list, int num_of_elem, string func) {
-    if (func == "sin") {
-        for (int i = 1; i <= num_of_elem; ++i) {
-            string s = string(std::to_string(sin(i)));
-            list.insert(s);
-        }
-    } else{
-        for (int i = 1; i <= num_of_elem; ++i) {
-            string s = string(std::to_string(cos(i)));
-            list.insert(s);
-        }
+struct lessThen {
+    /*bool operator() (const int i1, const int i2){
+        return (i1 < i2);
+    }*/
+    bool operator() (const string& str1, const string& str2){
+        return (str1 < str2);
     }
+};
+
+static void abc_insert(List<string> &list){
+    list.insert("y");
+    list.insert("v");
+    list.insert("x");
+    list.insert("w");
+    list.insert("u");
+    list.insert("z");
+    list.insert("b");
+    list.insert("k");
+    list.insert("t");
+    list.insert("r");
+    list.insert("o");
+    list.insert("d");
+    list.insert("s");
+    list.insert("q");
+    list.insert("p");
+    list.insert("n");
+    list.insert("m");
+    list.insert("l");
+    list.insert("j");
+    list.insert("f");
+    list.insert("i");
+    list.insert("h");
+    list.insert("g");
+    list.insert("e");
+    list.insert("c");
+    list.insert("a");
 }
 
-/**
- * Use to add @param num_of_elem to List<double>
- * @param func "sin" or "cos", use to make different lists
- */
-void addToListDouble(List<double> &list, int num_of_elem, string func) {
-    if (func == "sin"){
-        for (int i = 1; i <= num_of_elem; ++i) {
-            list.insert(sin(i));
-        }
-    } else{
-        for (int i = 1; i <= num_of_elem; ++i) {
-            list.insert(cos(i));
-        }
-    }
-}
 
-bool listCtorTest(){
-    List<int> list_int;
-    ASSERT_TRUE(list_int.getSize() == 0);
-    ASSERT_TRUE(list_int.begin() == list_int.end());
-    List<double> list_double;
-    ASSERT_TRUE(list_double.getSize() == 0);
-    List<char> list_char;
-    ASSERT_TRUE(list_char.getSize() == 0);
-    List<string> list_string;
-    ASSERT_TRUE(list_string.getSize() == 0);
-    ASSERT_TRUE(list_string.begin() == list_string.end());
-    return true;
-}
-
-bool listCopyCtorTest(){
-    List<int> list_int;
-    for (int i = 0; i < 7; ++i) {
-        list_int.insert(i);
-    }
-    List<int> list_int_cp(list_int);
-    ASSERT_TRUE(list_int == list_int_cp);
-    List<int>::Iterator it2 = list_int_cp.begin();
-    for (List<int>::Iterator it1 = list_int.begin();
-         it1 != list_int.end(); ++it1) {
-        ASSERT_TRUE(*it1 == *it2);
-        ++it2;
-    }
-
-    List<string> list_string;
-    addToListString(list_string, 7, "sin");
-    List<string> list_string_cp(list_string);
-    ASSERT_TRUE(list_string == list_string_cp);
-    List<string>::Iterator it3 = list_string_cp.begin();
-    for (List<string>::Iterator it4 = list_string.begin();
-         it4 != list_string.end(); ++it4) {
-        ASSERT_TRUE(*it3 == *it4);
-        ++it3;
-    }
-    ASSERT_TRUE(it3 == list_string_cp.end());
-    return true;
-}
-
-bool ListAssignOpTest(){
-    List<double> list_double1;
-    list_double1 = list_double1;
-    addToListDouble(list_double1, 10, "cos");
-    List<double > list_double2;
-    addToListDouble(list_double2, 10, "sin");
-    list_double1 = list_double2;
-    ASSERT_TRUE(list_double1 == list_double2);
-    addToListDouble(list_double1, 4, "sin");
-    list_double1 = list_double2;
-    ASSERT_TRUE(list_double1 == list_double2);
-    list_double1 = list_double1;
-    ASSERT_TRUE(list_double1 == list_double1);
-
-    return true;
-}
-
-bool ListBeginEndTest(){
-    List<int> list_int;
-    ASSERT_TRUE(list_int.begin() == list_int.end());
-    ASSERT_NO_THROW(list_int.begin());
-    list_int.insert(1);
-    ASSERT_TRUE(*list_int.begin() == 1);
-    ASSERT_THROWS(ElementNotFound, *list_int.end());
-
-    List<string> list_string;
-    addToListString(list_string, 200, "cos");
-    ASSERT_TRUE(*(list_string.begin()) == to_string(cos(1)));
-    ASSERT_THROWS(ElementNotFound, *list_string.end());
-
-    return true;
-}
-
-bool listInsertTest(){
-    //***int***
-    List<int> list_int;
-    ASSERT_TRUE(list_int.getSize() == 0);
-    list_int.insert(1, list_int.end());
-    ASSERT_TRUE(list_int.getSize() == 1);
-    ASSERT_TRUE(*list_int.begin() == 1);
-
-    list_int.insert(2);
-    ASSERT_TRUE(list_int.getSize() == 2);
-    List<int>::Iterator it = list_int.begin();
-    ASSERT_TRUE(*it == 1);
-    ASSERT_TRUE(*++it == 2);
-
-    list_int.insert(3, list_int.begin());
-    it = --list_int.begin();
-    ASSERT_TRUE(list_int.getSize() == 3);
-    it = list_int.begin();
-    ASSERT_TRUE(*list_int.begin() == 3);
-    ASSERT_TRUE(*++it == 1);
-    ASSERT_TRUE(*++it == 2);
-    ASSERT_THROWS(ElementNotFound, *++it);
-
-    it = list_int.begin();
-    for (int j = 0; j < 2; ++j) {
-        ++it;
-    }
-    list_int.insert(4, it);
-    ASSERT_TRUE(list_int.getSize() == 4);
-    it = list_int.begin();
-    for (int j = 0; j < 2; ++j) {
-        ++it;
-    }
-    ASSERT_TRUE(*it == 4);
-    ASSERT_TRUE(*++it == 2);
-    ASSERT_TRUE(*--(--it) == 1);
-    //ASSERT_THROWS(ElementNotFound, *----it);
-    //ASSERT_NO_THROW(list_int.insert(3, it));
-
-    //***string***
-    List<string> list_string;
-    ASSERT_TRUE(list_string.getSize() == 0);
-    string s1 = "str1";
-    list_string.insert("str1", list_string.end());
-
-    ASSERT_TRUE(list_string.getSize() == 1);
-    ASSERT_TRUE(*list_string.begin() == s1);
-
-    string s2 = "str2";
-    list_string.insert(s2);
-    ASSERT_TRUE(list_string.getSize() == 2);
-
-    string s3 = "str3";
-    list_string.insert(s3, list_string.begin());
-    ASSERT_TRUE(list_string.getSize() == 3);
-    ASSERT_TRUE(*list_string.begin() == s3);
-
-    List<string>::Iterator its = list_string.begin();
-    for (int j = 0; j < 2; ++j) {
-        ++its;
-    }
-    string s4 = "str4";
-    list_string.insert(s4, its);
-    ASSERT_TRUE(list_string.getSize() == 4);
-    its = list_string.begin();
-    for (int j = 0; j < 2; ++j) {
-        ++its;
-    }
-    ASSERT_TRUE(*its == s4);
-    ASSERT_TRUE(*(++its) == s2);
-    ASSERT_TRUE(*--(--its) == s1);
-    ASSERT_TRUE(*its++ == s1);
-    ASSERT_TRUE(*its == s4);
-    ASSERT_TRUE(++++its == list_string.end());
-    ASSERT_TRUE(list_string.begin() != its);
-//    ASSERT_NO_THROW(list_string.insert("d2", --list_string.begin()));
-    List<string> big_list;
-    ASSERT_THROWS(ElementNotFound, big_list.insert("s", list_string.begin()));
-    addToListString(big_list, 5000, "sin");
-    ASSERT_TRUE(big_list.getSize() == 5000);
-    return true;
-}
-
-bool removeListTest(){
-    List<int> list_int;
-    ASSERT_THROWS(ElementNotFound, list_int.remove(list_int.begin()));
-    for (int i = 0; i < 10; ++i) {
-        list_int.insert(i);
-    }
-    ASSERT_TRUE(list_int.getSize() == 10);
-    list_int.remove(list_int.begin());
-    ASSERT_TRUE(list_int.getSize() == 9);
-    ASSERT_TRUE(*list_int.begin() == 1);
-    List<int> list_int2;
-    ASSERT_THROWS(ElementNotFound, list_int.remove(list_int2.begin()));
-    list_int2.insert(2);
-    ASSERT_THROWS(ElementNotFound, list_int.remove(list_int2.begin()));
-
+static void listInsert() {
     List<int> list;
-    for (int l = 0; l < 200; ++l) {
-        list.insert(l);
-    }
-    ASSERT_TRUE(list.getSize() == 200);
-    for (int l = 0; l < 200; ++l) {
-        list.remove(list.begin());
-    }
-    ASSERT_TRUE(list.getSize() == 0);
-
-    List<double> list_double;
-    for (double j = 0.5; j < 3.4; j+=0.5) {
-        list_double.insert(j);
-    }
-    ASSERT_TRUE(list_double.getSize() == 6);
-    List<double>::Iterator itd = list_double.begin();
-    for (int k = 1; k <= 3; ++k) {
-        itd++;
-    }
-    list_double.remove(itd);
-    ASSERT_TRUE(list_double.getSize() == 5);
-    itd = list_double.begin();
-    for (int k = 2; k <= 3; ++k) {
-        itd++;
-    }
-    ASSERT_TRUE(*itd == 1.5);
-    ASSERT_TRUE(*++itd == 2.5);
-
-    List<string> list_string;
-    addToListString(list_string, 5000, "cos");
-    ASSERT_TRUE(list_string.getSize() == 5000);
-    list_string.sort(std::less<string>());
-    for (int m = 0; m < 5000; ++m) {
-        list_string.remove(list_string.begin());
-    }
-    ASSERT_TRUE(list_string.getSize() == 0);
-    ASSERT_TRUE(list_string.begin() == list_string.end());
-
-    return true;
+    list.insert(10);
+    List<int>::Iterator it=list.begin();
+    ASSERT_EQUALS(*it, 10);
+    list.insert(4,list.begin());
+    ASSERT_EQUALS(*(it), 10);
+    list.insert(9,list.begin());
+    it=list.begin();
+    ASSERT_EQUALS(*it, 9);
+    ASSERT_TRUE(list.getSize()==3);
 }
-
-bool ListEqualNotEqualOpTest(){
-    List<double > list_d1;
-    addToListDouble(list_d1, 1000, "cos");
-    List<double > list_d2;
-    addToListDouble(list_d2, 1000, "cos");
-    ASSERT_TRUE(list_d1 == list_d2);
-    ASSERT_FALSE(list_d1 != list_d2);
-    list_d2.insert(2.12);
-    ASSERT_TRUE(list_d1 != list_d2);
-    ASSERT_FALSE(list_d1 == list_d2);
-
-    ASSERT_TRUE(list_d1 == list_d1);
-
-    list_d1 = list_d2;
-    ASSERT_TRUE(list_d1 == list_d2);
-    list_d1.remove(list_d1.begin());
-    ASSERT_TRUE(list_d1 != list_d2);
-
-    List<string> list_s1;
-    ASSERT_TRUE(list_s1 == list_s1);
-    addToListString(list_s1, 200, "sin");
-    List<string> list_s2;
-    addToListString(list_s2, 200, "sin");
-    ASSERT_TRUE(list_s1 == list_s2);
-    List<string>::Iterator it = list_s1.begin();
-    for (int i = 0; i < 3; ++i) {
-        ++it;
+static void listRemove() {
+    List<int> list;
+    for (int i=0;i<8;i++){
+        list.insert(i);
     }
-    list_s1.remove(it);
-    ASSERT_TRUE(list_s1 != list_s2);
-    it = list_s1.begin();
-    int i = 0;
-    for (; i < 3; ++i) {
-        ++it;
+    List<int>::Iterator it=list.begin();
+    for (int i=0; i<6;i++){
+        it++;
     }
-    string s = to_string(sin(4));
-    list_s1.insert(s, it);
-    ASSERT_TRUE(list_s1 == list_s2);
-
-    return true;
+    list.remove(it);
+    it=list.begin();
+    ASSERT_TRUE(list.getSize()==7);
+    for (int i=0;i<7;i++){
+        ASSERT_FALSE(*it==6);
+    }
+    it++;
+    list.remove(it);
+    ASSERT_TRUE(list.getSize()==6);
+    for (int i=0;i<6;i++){
+        ASSERT_FALSE(*it==1);
+    }
 }
-
-bool listFindTest(){
-    List<int> list_int;
-    for (int i = 0; i < 10; ++i) {
-        list_int.insert(i);
+static void listIterator() {
+    List<int> list;
+    for (int i=0;i<8;i++){
+        list.insert(i);
     }
-    List<int>::Iterator it = list_int.find(EqualTo(3));
-    ASSERT_EQUALS(3, *it);
-    it = list_int.find(EqualTo(20));
-    ASSERT_TRUE(it == list_int.end());
-
-    List<string> list_string;
-    List<string>::Iterator its = list_string.find(EqualTo("str1"));
-    ASSERT_TRUE(its == list_string.end());
-    string s1 = "str1";
-    string s2 = "str2";
-    string s3 = "str3";
-    list_string.insert(s1);
-    list_string.insert(s2);
-    list_string.insert(s1);
-    list_string.insert(s3);
-    list_string.insert(s2);
-    list_string.insert(s1);
-    its = list_string.find(EqualTo(s1));
-    ASSERT_TRUE(its == list_string.begin());
-    its = list_string.find(EqualTo(s2));
-    ASSERT_TRUE(its == ++list_string.begin());
-    its = list_string.find(EqualTo(s3));
-    ASSERT_TRUE(its == ++++++list_string.begin());
-    its = list_string.find(EqualTo("no"));
-    ASSERT_TRUE(its == list_string.end());
-    list_string.remove(++list_string.begin());
-    its = list_string.find(EqualTo(s2));
-    ASSERT_TRUE(its == ++++++list_string.begin());
-    list_string.remove(++++++list_string.begin());
-    ASSERT_TRUE(list_string.find(EqualTo(s2)) == list_string.end());
-
-    return true;
+    List<int>::Iterator it=list.begin();
+    for (int i=0;i<8;i++){
+        ASSERT_TRUE(*it==i);
+        it++;
+    }
+    it=list.begin();
+    for (int i=0;i<7;i++){
+        it++;
+    }
+    it--;
+    ASSERT_TRUE(*it==6);
+    --it;
+    ASSERT_TRUE(*it==5);
+    it++;
+    ASSERT_TRUE(*it==6);
 }
-
-bool listSortTest(){
-    List<double> list_double;
-    addToListDouble(list_double, 500, "cos");
-    list_double.sort(std::less<double>());
-    List<double >::Iterator it1 = list_double.begin();
-    List<double>::Iterator it2 = it1;
-    it2++;
-    std::less<double> lessd;
-    for (int j = 0; j < list_double.getSize()  - 1 ; ++j) {
-        ASSERT_TRUE(lessd(*it1, *it2));
-        ++it1;
-        ++it2;
-    }
-
-    List<string> list_string;
-    addToListString(list_string, 500, "sin");
-    list_string.sort(std::less<string>());
-    List<string >::Iterator its1 = list_string.begin();
-    List<string>::Iterator its2 = its1;
-    its2++;
-    std::less_equal<string> lesss;
-    for (int j = 0; j < list_string.getSize() - 1 ; ++j) {
-        ASSERT_TRUE(lesss(*its1, *its2));
-        ++its1;
-        ++its2;
-    }
-
-    return true;
+static void listException() {
+    List<int> list;
+    List<int>::Iterator it=list.begin();
+    List<int> list2;
+    List<int>::Iterator it2=list2.begin();
+    ASSERT_THROWS(mtm::ListExceptions::ElementNotFound, list.remove(it));
+    ASSERT_THROWS(mtm::ListExceptions::ElementNotFound, list.insert(3,it2));
 }
+static void listBegin(){
+    List<string> list;
+    list.insert("hey");
+    list.insert("how are you doin?");
+    ASSERT_TRUE(*(list.begin())=="hey");
+    List<string>::Iterator it=list.begin();
+    list.insert("Joey", it);
+    ASSERT_TRUE(*(list.begin())=="Joey");
+    it=list.begin();
+    list.insert("is saying", it);
+    ASSERT_TRUE(*(list.begin())=="is saying");
+    it++;
+    it++;
+    list.insert("Tribbiani", it);
+    ASSERT_TRUE(*(list.begin())=="is saying");
+    list.remove(list.begin());
+    ASSERT_TRUE(*(list.begin())=="Joey");
 
-bool ListGetSizeTest(){
-    List<string> list_str;
-    addToListString(list_str, 70, "cos");
-    ASSERT_TRUE(list_str.getSize() == 70);
-    for (int i = 0; i < 30; ++i) {
-        list_str.remove(list_str.begin());
-    }
-    ASSERT_TRUE(list_str.getSize() == 40);
-    addToListString(list_str, 200, "sin");
-    ASSERT_TRUE(list_str.getSize() == 240);
-    return true;
 }
-
-
-bool iteratorDereferenceTest(){
-    List<int> list_int;
-    ASSERT_THROWS(ElementNotFound, *list_int.end());
-    List<string> list_s;
-    addToListString(list_s, 200, "sin");
-    List<string>::Iterator it = list_s.begin();
-    int i = 1;
-    for (; it != list_s.end(); ++it) {
-        ASSERT_TRUE(*it == to_string(sin(i)));
-        i++;
+static void listSize(){
+   List<int> list;
+    for (int i=0;i<100;i++){
+        list.insert(i);
     }
-    ASSERT_THROWS(ElementNotFound, *it);
-    return true;
+    ASSERT_EQUALS(list.getSize(),100);
+    list.insert(101);
+    ASSERT_NOT_EQUAL(list.getSize(),100);
+    ASSERT_EQUALS(list.getSize(),101);
+    list.remove(list.begin());
+    list.remove(list.begin());
+    ASSERT_NOT_EQUAL(list.getSize(),100);
+    ASSERT_EQUALS(list.getSize(),99);
+    List<int>::Iterator it=list.begin();
+    for(int i=0;i<9;i++){
+        list.remove(it);
+        it++;
+    }
+    ASSERT_EQUALS(list.getSize(),90);
 }
-
-bool IteratorEqualNotEqualOpTest(){
+static void listEqual(){
     List<string> list1;
-    ASSERT_TRUE(list1.begin() == list1.end());
     List<string> list2;
-//    ASSERT_FALSE(list1.begin() == list2.end());
-//    ASSERT_TRUE(list1.begin() != list2.end());
-    addToListString(list1, 20, "sin");
-    addToListString(list2, 30, "sin");
-    List<string>::Iterator it1 = list1.begin();
-    List<string>::Iterator it2 = list2.begin();
-    ASSERT_FALSE(it1 == it2);
-    ASSERT_FALSE(list1.begin() == ++it1);
-    ASSERT_FALSE(list1.end() == list2.end());
-    it2 = it1;
-    ASSERT_TRUE(it1 == it2);
-    return true;
+    list1.insert("My");
+    list2.insert("My");
+    list1.insert("Name");
+    list2.insert("Name");
+    list1.insert("is");
+    list2.insert("is");
+    list1.insert("Slim");
+    list2.insert("Slim");
+    list1.insert("Shady");
+    list2.insert("Shady");
+    ASSERT_TRUE(list1==list2);
+    ASSERT_FALSE(list1!=list2);
+    list1.insert("Please");
+    ASSERT_TRUE(list1!=list2);
+    ASSERT_FALSE(list1==list2);
+    list2.insert("Please");
+    ASSERT_TRUE(list1==list2);
+    ASSERT_FALSE(list1!=list2);
+    List<int> int_list1;
+    List<int> int_list2;
+    for (int i=1;i<=50;i++){
+        int_list1.insert(i);
+        int_list2.insert(i);
+    }
+    ASSERT_TRUE(int_list1==int_list2);
+    ASSERT_FALSE(int_list1!=int_list2);
+    int_list1.insert(600);
+    ASSERT_TRUE(int_list1!=int_list2);
+    ASSERT_FALSE(int_list1==int_list2);
 }
+static void listPredicate() {
+    List<int> int_list;
+    for (int i=0;i<=1000;i+=4){
+        int_list.insert(i);
+    }
+    List<int>::Iterator it = int_list.find(SameAs(16));
+    ASSERT_TRUE(*it==16);
+    it = int_list.find(SameAs(996));
+    ASSERT_TRUE(*it==996);
+    it = int_list.find(SameAs(555));
+    ASSERT_TRUE(it==int_list.end());
+    List<string> string_list;
+    string s1=("Diamond");
+    string_list.insert(s1);
+    string s2="Gold";
+    string_list.insert(s2);
+    string s3="Silver";
+    string_list.insert(s3);
+    string s4="Bronze";
+    string_list.insert(s4);
+    string s5="Steel";
+    string_list.insert(s5);
+    List<string>::Iterator it2 = string_list.find(SameAs(s1));
+    ASSERT_TRUE(it2==(string_list.begin()));
+    it2=string_list.find(SameAs(s2));
+    ASSERT_TRUE(it2==++(string_list.begin()));
+    it2=string_list.find(SameAs(s3));
+    ASSERT_TRUE(it2==++++(string_list.begin()));
+    it2=string_list.find(SameAs(s4));
+    ASSERT_TRUE(it2==++++++(string_list.begin()));
+    it2= string_list.find(SameAs(s5));
+    ASSERT_TRUE(it2==++++++++(string_list.begin()));
+    it2=string_list.find(SameAs("1234"));
+    ASSERT_TRUE(it2==string_list.end());
+}
+static void listSort(){
+    List<string> string_list;
+    abc_insert(string_list);
+    string_list.sort(std::less<string>());
+    List<string>::Iterator it1 = string_list.begin();
+    List<string>::Iterator it2 = string_list.begin();
+    it2++;
+    std::less<string> is_less;
+    for (int i=0;i<25;i++){
+        ASSERT_TRUE(is_less(*it1, *it2));
+        it1++;
+        it2++;
+    }
+    it1=string_list.begin();
+    ASSERT_TRUE(*it1=="a");
+    ++++++++++it1;
+    ASSERT_TRUE(*it1=="f");
+}
+
 
 int main(){
-    RUN_TEST(listCtorTest);
-    RUN_TEST(listCopyCtorTest);
-    RUN_TEST(ListAssignOpTest);
-    RUN_TEST(ListBeginEndTest);
-    RUN_TEST(listInsertTest);
-    RUN_TEST(removeListTest);
-    RUN_TEST(ListEqualNotEqualOpTest);
-    RUN_TEST(listFindTest);
-    RUN_TEST(listSortTest);
-    RUN_TEST(ListGetSizeTest);
-    RUN_TEST(iteratorDereferenceTest);
-    RUN_TEST(IteratorEqualNotEqualOpTest);
-    return 0;
+    RUN_TEST(listInsert);
+    RUN_TEST(listRemove);
+    RUN_TEST(listIterator);
+    RUN_TEST(listException);
+    RUN_TEST(listBegin);
+    RUN_TEST(listSize);
+    RUN_TEST(listEqual);
+    RUN_TEST(listPredicate);
+    RUN_TEST(listSort);
 }
-
