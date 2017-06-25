@@ -12,6 +12,11 @@ class List {
         node *previous;
         node *next;
 
+        // Constructs a new node with the specified data.
+        //
+        // @param node_data : the data we save inside the list
+        // @param *node_previous : pointer to the previous element
+        // @param *node_next: pointer to the next element
         node(T node_data, node *node_previous, node *node_next) :
                 data(node_data), previous(node_previous), next(node_next) {}
     };
@@ -20,55 +25,129 @@ class List {
     node *head;
     node *tail;
 public:
+    //constructs a new list with NULL pointers and size zero.
     List();
+
+    //List destructor
     ~List();
+
+    //copy constructor of the list
+    //@param list: the list to copy the elements from
     List(const List&);
+
+    //assignment operator of lists.
+    //@param list: assigns the list into *this list
+    //@return ths new list we assigned.
     List& operator=(const List&);
+
+    //comparison operator between lists.
+    //@param list: the list we want to compare with.
+    //@ return true: if they are equal
+    //@return false: if they are different
     bool operator==(const List&) const;
+
+    //comparison operator between lists. (not equal)
+    //@param list: the list we want to compare with.
+    //@ return false: if they are equal
+    //@return true: if they are different
     bool operator!=(const List&) const;
+
+    //Iterates through the list.
     class Iterator{
         const List<T>* linked_list;
         node *current;
+        // Constructs a new iterator with the specified data.
+        //
+        // @param *linked_list: the list we are iterate through
+        // @param *current: the pointer to the current element that the iterator
+        //is holding
         Iterator(const List<T> *linked_list, node *current):
                 linked_list(linked_list), current(current) {}
         friend class List<T>;
     public:
+        //advance the iterator to point to the next element in the list.
+        //return: the next element pointer
+        //return: null if its the end of the list
         Iterator& operator++();
 
+        //advance the iterator to point to the next element in the list.
+        //return: the element we pointed to before the ++
         Iterator operator++(int);
 
+        //decrement operator.
+        //return: the previous element pointer
+        //return: null if its we tried to decrease the head element.
         Iterator& operator--();
 
+        //decrement operator.
+        //return: the element we pointed to before the --
         Iterator operator--(int);
 
+        //comparison operator between iterators.
+        //@param iteratorPosition: the iterator we want to compare with.
+        //@ return true: if they are equal
+        //@return false: if they are different
         bool operator==(const Iterator &iteratorPosition) const;
 
+        //comparison operator between iterators. (not equal)
+        //@param iteratorPosition: the iterator we want to compare with.
+        //@ return false: if they are equal
+        //@return true: if they are different
         bool operator!=(const Iterator &iteratorPosition) const;
 
+        //value function.
+        //@return: the data inside of the node that the iterator is pointing at.
         T &operator*() const;
 
+        //default copy constructor
         Iterator(const Iterator &) = default;
-
+        //default assignment operator
         Iterator &operator=(const Iterator &) = default;
+
+        //default destructor
+        ~Iterator()= default;
+
 
     };
 
+    //Sets the iterator to point to the first element of the list.
+    //return- the first element of the list.
     Iterator begin() const;
 
+    //Sets the iterator to point to the first element of the list.
+    //return- the element that is after the last element- NULL.
     Iterator end() const;
 
+    //Inserts data to be the previous of the iterator's node.
+    //@param data: the data we want to insert to the list
+    //@param iterator: the element we want the inserted data to be his previous.
+    //throw: ElementNotFound if the iterator element is not in the list
     void insert(const T &data, Iterator iterator);
 
+    //Inserts data to the end of the list.
+    //@param data: the data we want to insert to the list
     void insert(const T &data);
 
+    //Removes the eleent that the iterator is pointint at.
+    //@param iterator- the element we want to remove from the list
+    //throw: ElementNotFound- there is no element like this in the list
     void remove(Iterator iterator);
 
+    //Function oject that finds an element using the predicate function
+    //@param: Predicate functions is a condition function- return true if the
+    //element fullfils the conditions, and false other wise.
+    //return: the first element that returns true, or null if there is no element
+    //like this
     template<typename Predicate>
     Iterator find(const Predicate& predicate);
 
+    //Function oject that sorts the list using compare function.
+    //@param: Predicate functions is a comparison function- return true if the
+    //elements fullfils the conditions, and false other wise.
     template <typename Compare>
     void sort(const Compare& compare);
 
+    //@return: the size of the list we are working on.
     int getSize();
 };
 template<class T>
@@ -110,8 +189,8 @@ template<class T>
 bool List<T>::Iterator::operator==(const Iterator &iteratorPosition) const {
     return (((iteratorPosition.current==linked_list->tail)&&
              (current==linked_list->tail))
-            ||(((iteratorPosition.linked_list==this->linked_list))&&
-              (iteratorPosition.current)==(current)));
+            ||((iteratorPosition.linked_list==this->linked_list))&&
+              (iteratorPosition.current)==(current));
 }
 template<class T>
 bool List<T>::Iterator::operator!=(const Iterator& iteratorPosition)const {
@@ -159,16 +238,16 @@ void List<T>::insert(const T &data, Iterator iterator) {
     if (getSize()==0) {
         insert(data);
     }
+    else if (iterator==end()){
+        insert(data);
+    }
     else if (iterator.current==head){
         node* temp= new node(data, NULL, iterator.current);
         iterator.current->previous=temp;
         head=temp;
         size++;
     }
-    else if (iterator==end()){
-        insert(data);
-    }
-    else{
+    else {
         node* temp= new node(data, iterator.current->previous, iterator.current);
         iterator.current->previous->next=temp;
         iterator.current->previous=temp;
@@ -287,7 +366,6 @@ int List<T>::getSize() {
 }
 
 
-//iterator functions
 
 
 #endif //HW4_LIST_H
