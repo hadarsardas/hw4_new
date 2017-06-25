@@ -1,265 +1,372 @@
+#ifndef HW4_LIST_H
+#define HW4_LIST_H
+#include <iostream>
+#include "../Exceptions.h"
 #include <functional>
-#include "list.h"
-#include "Exceptions.h"
-#include "mtmtest.h"
-#include <cstring>
-using std::string;
+template <class T>
+class List {
+    class node {
+        friend class Iterator;
+        friend class List<T>;
+        T data;
+        node *previous;
+        node *next;
 
-class SameAs {
-private:
-    int target;
-    string str;
+        // Constructs a new node with the specified data.
+        //
+        // @param node_data : the data we save inside the list
+        // @param *node_previous : pointer to the previous element
+        // @param *node_next: pointer to the next element
+        node(T node_data, node *node_previous, node *node_next) :
+                data(node_data), previous(node_previous), next(node_next) {}
+    };
+
+    int size;
+    node *head;
+    node *tail;
 public:
-    SameAs(int i) : target(i) {}
-    SameAs(string str) : str(str) {}
-    bool operator()(const int &i) const {
-        return i == target;
-    }
-    bool operator()(const string& i) const {
-        return i == str;
-    }
+    //constructs a new list with NULL pointers and size zero.
+    List();
+
+    //List destructor
+    ~List();
+
+    //copy constructor of the list
+    //@param list: the list to copy the elements from
+    List(const List&);
+
+    //assignment operator of lists.
+    //@param list: assigns the list into *this list
+    //@return ths new list we assigned.
+    List& operator=(const List&);
+
+    //comparison operator between lists.
+    //@param list: the list we want to compare with.
+    //@ return true: if they are equal
+    //@return false: if they are different
+    bool operator==(const List&) const;
+
+    //comparison operator between lists. (not equal)
+    //@param list: the list we want to compare with.
+    //@ return false: if they are equal
+    //@return true: if they are different
+    bool operator!=(const List&) const;
+
+    //Iterates through the list.
+    class Iterator{
+        const List<T>* linked_list;
+        node *current;
+        // Constructs a new iterator with the specified data.
+        //
+        // @param *linked_list: the list we are iterate through
+        // @param *current: the pointer to the current element that the iterator
+        //is holding
+        Iterator(const List<T> *linked_list, node *current):
+                linked_list(linked_list), current(current) {}
+        friend class List<T>;
+    public:
+        //advance the iterator to point to the next element in the list.
+        //return: the next element pointer
+        //return: null if its the end of the list
+        Iterator& operator++();
+
+        //advance the iterator to point to the next element in the list.
+        //return: the element we pointed to before the ++
+        Iterator operator++(int);
+
+        //decrement operator.
+        //return: the previous element pointer
+        //return: null if its we tried to decrease the head element.
+        Iterator& operator--();
+
+        //decrement operator.
+        //return: the element we pointed to before the --
+        Iterator operator--(int);
+
+        //comparison operator between iterators.
+        //@param iteratorPosition: the iterator we want to compare with.
+        //@ return true: if they are equal
+        //@return false: if they are different
+        bool operator==(const Iterator &iteratorPosition) const;
+
+        //comparison operator between iterators. (not equal)
+        //@param iteratorPosition: the iterator we want to compare with.
+        //@ return false: if they are equal
+        //@return true: if they are different
+        bool operator!=(const Iterator &iteratorPosition) const;
+
+        //value function.
+        //@return: the data inside of the node that the iterator is pointing at.
+        T &operator*() const;
+
+        //default copy constructor
+        Iterator(const Iterator &) = default;
+        //default assignment operator
+        Iterator &operator=(const Iterator &) = default;
+
+        //default destructor
+        ~Iterator()= default;
+
+
+    };
+
+    //Sets the iterator to point to the first element of the list.
+    //return- the first element of the list.
+    Iterator begin() const;
+
+    //Sets the iterator to point to the first element of the list.
+    //return- the element that is after the last element- NULL.
+    Iterator end() const;
+
+    //Inserts data to be the previous of the iterator's node.
+    //@param data: the data we want to insert to the list
+    //@param iterator: the element we want the inserted data to be his previous.
+    //throw: ElementNotFound if the iterator element is not in the list
+    void insert(const T &data, Iterator iterator);
+
+    //Inserts data to the end of the list.
+    //@param data: the data we want to insert to the list
+    void insert(const T &data);
+
+    //Removes the eleent that the iterator is pointint at.
+    //@param iterator- the element we want to remove from the list
+    //throw: ElementNotFound- there is no element like this in the list
+    void remove(Iterator iterator);
+
+    //Function oject that finds an element using the predicate function
+    //@param: Predicate functions is a condition function- return true if the
+    //element fullfils the conditions, and false other wise.
+    //return: the first element that returns true, or null if there is no element
+    //like this
+    template<typename Predicate>
+    Iterator find(const Predicate& predicate);
+
+    //Function oject that sorts the list using compare function.
+    //@param: Predicate functions is a comparison function- return true if the
+    //elements fullfils the conditions, and false other wise.
+    template <typename Compare>
+    void sort(const Compare& compare);
+
+    //@return: the size of the list we are working on.
+    int getSize();
 };
-
-
-struct lessThen {
-    /*bool operator() (const int i1, const int i2){
-        return (i1 < i2);
-    }*/
-    bool operator() (const string& str1, const string& str2){
-        return (str1 < str2);
+template<class T>
+List<T>::List() :
+        size(0), head(NULL) , tail(NULL)
+{}
+template<class T>
+List<T>::~List() {
+    while(head!=NULL){
+        node* to_delete=head;
+        head=head->next;
+        delete to_delete;
+        size--;
     }
-};
-
-static void abc_insert(List<string> &list){
-    list.insert("y");
-    list.insert("v");
-    list.insert("x");
-    list.insert("w");
-    list.insert("u");
-    list.insert("z");
-    list.insert("b");
-    list.insert("k");
-    list.insert("t");
-    list.insert("r");
-    list.insert("o");
-    list.insert("d");
-    list.insert("s");
-    list.insert("q");
-    list.insert("p");
-    list.insert("n");
-    list.insert("m");
-    list.insert("l");
-    list.insert("j");
-    list.insert("f");
-    list.insert("i");
-    list.insert("h");
-    list.insert("g");
-    list.insert("e");
-    list.insert("c");
-    list.insert("a");
+}
+template<class T>
+typename List<T>::Iterator& List<T>::Iterator::operator++() {
+    current=current->next;
+    return *this;
+}
+template<class T>
+typename List<T>::Iterator List<T>::Iterator::operator++(int) {
+    Iterator result=*this;
+    ++(*this);
+    return result;
+}
+template<class T>
+typename List<T>::Iterator& List<T>::Iterator::operator--() {
+    current=current->previous;
+    return *this;
+}
+template<class T>
+typename List<T>::Iterator List<T>::Iterator::operator--(int) {
+    Iterator result=*this;
+    --*this;
+    return result;
+}
+template<class T>
+bool List<T>::Iterator::operator==(const Iterator &iteratorPosition) const {
+    return (((iteratorPosition.current==linked_list->tail)&&
+             (current==linked_list->tail))
+            ||((iteratorPosition.linked_list==this->linked_list))&&
+              (iteratorPosition.current)==(current));
+}
+template<class T>
+bool List<T>::Iterator::operator!=(const Iterator& iteratorPosition)const {
+    return !(*this == iteratorPosition);
 }
 
+template<class T>
+T& List<T>::Iterator::operator*() const {
+    if (current==NULL){
+        throw mtm::ListExceptions::ElementNotFound();
+    };
+    return current->data;
+}
+template<class T>
+typename List<T>::Iterator List<T>:: begin() const {
+    return Iterator(this,head);
+}
+template<class T>
+typename List<T>::Iterator List<T>::end() const {
+    List<T>::Iterator iterator=Iterator(this,tail);
+    if (iterator.current!=NULL){
+        iterator++;
+    }
+    return iterator;
+}
 
-static void listInsert() {
-    List<int> list;
-    list.insert(10);
-    List<int>::Iterator it=list.begin();
-    ASSERT_EQUALS(*it, 10);
-    list.insert(4,list.begin());
-    ASSERT_EQUALS(*(it), 10);
-    list.insert(9,list.begin());
-    it=list.begin();
-    ASSERT_EQUALS(*it, 9);
-    ASSERT_TRUE(list.getSize()==3);
+template<class T>
+void List<T>::insert(const T &data) {
+    node* temp = new node(data,tail,NULL);
+    if(size==0){
+        head=temp;
+        tail=temp;
+    }
+    else {
+        tail->next = temp;
+        tail = temp;
+    }
+    size++;
 }
-static void listRemove() {
-    List<int> list;
-    for (int i=0;i<8;i++){
-        list.insert(i);
+template<class T>
+void List<T>::insert(const T &data, Iterator iterator) {
+    if (iterator.linked_list!=this){
+        throw mtm::ListExceptions::ElementNotFound();
     }
-    List<int>::Iterator it=list.begin();
-    for (int i=0; i<6;i++){
-        it++;
+    if (getSize()==0) {
+        insert(data);
     }
-    list.remove(it);
-    it=list.begin();
-    ASSERT_TRUE(list.getSize()==7);
-    for (int i=0;i<7;i++){
-        ASSERT_FALSE(*it==6);
+    else if (iterator==end()){
+        insert(data);
     }
-    it++;
-    list.remove(it);
-    ASSERT_TRUE(list.getSize()==6);
-    for (int i=0;i<6;i++){
-        ASSERT_FALSE(*it==1);
+    else if (iterator.current==head){
+        node* temp= new node(data, NULL, iterator.current);
+        iterator.current->previous=temp;
+        head=temp;
+        size++;
+    }
+    else {
+        node* temp= new node(data, iterator.current->previous, iterator.current);
+        iterator.current->previous->next=temp;
+        iterator.current->previous=temp;
+        size++;
     }
 }
-static void listIterator() {
-    List<int> list;
-    for (int i=0;i<8;i++){
-        list.insert(i);
+template <class T>
+void List<T>::remove(Iterator iterator) {
+    if ((iterator.linked_list!=this || this->getSize()==0)||
+        iterator.current==NULL){
+        throw mtm::ListExceptions::ElementNotFound();
     }
-    List<int>::Iterator it=list.begin();
-    for (int i=0;i<8;i++){
-        ASSERT_TRUE(*it==i);
-        it++;
+    if((iterator!=begin())&&(iterator!=end())) {
+        iterator.current->previous->next = iterator.current->next;
+        iterator.current->next->previous = iterator.current->previous;
     }
-    it=list.begin();
-    for (int i=0;i<7;i++){
-        it++;
+    else if (iterator==begin()){
+        head=iterator.current->next;
+        if (size!=1) {
+            head->previous = NULL;
+        }
+        else{
+            head=NULL;
+            tail=NULL;
+        }
     }
-    it--;
-    ASSERT_TRUE(*it==6);
-    --it;
-    ASSERT_TRUE(*it==5);
-    it++;
-    ASSERT_TRUE(*it==6);
+    else{
+        tail=iterator.current->previous;
+        tail->next=NULL;
+    }
+    delete iterator.current;
+    iterator.current = NULL;
+    size--;
 }
-static void listException() {
-    List<int> list;
-    List<int>::Iterator it=list.begin();
-    List<int> list2;
-    List<int>::Iterator it2=list2.begin();
-    ASSERT_THROWS(mtm::ListExceptions::ElementNotFound, list.remove(it));
-    ASSERT_THROWS(mtm::ListExceptions::ElementNotFound, list.insert(3,it2));
-}
-static void listBegin(){
-    List<string> list;
-    list.insert("hey");
-    list.insert("how are you doin?");
-    ASSERT_TRUE(*(list.begin())=="hey");
-    List<string>::Iterator it=list.begin();
-    list.insert("Joey", it);
-    ASSERT_TRUE(*(list.begin())=="Joey");
-    it=list.begin();
-    list.insert("is saying", it);
-    ASSERT_TRUE(*(list.begin())=="is saying");
-    it++;
-    it++;
-    list.insert("Tribbiani", it);
-    ASSERT_TRUE(*(list.begin())=="is saying");
-    list.remove(list.begin());
-    ASSERT_TRUE(*(list.begin())=="Joey");
 
-}
-static void listSize(){
-   List<int> list;
-    for (int i=0;i<100;i++){
-        list.insert(i);
+template <class T>
+template <typename Predicate>
+typename List<T>::Iterator List<T>::find(const Predicate &predicate) {
+    for (Iterator it = begin(); it.current != NULL; it++) {
+        if (predicate(*it)) {
+            return it;
+        }
     }
-    ASSERT_EQUALS(list.getSize(),100);
-    list.insert(101);
-    ASSERT_NOT_EQUAL(list.getSize(),100);
-    ASSERT_EQUALS(list.getSize(),101);
-    list.remove(list.begin());
-    list.remove(list.begin());
-    ASSERT_NOT_EQUAL(list.getSize(),100);
-    ASSERT_EQUALS(list.getSize(),99);
-    List<int>::Iterator it=list.begin();
-    for(int i=0;i<9;i++){
-        list.remove(it);
-        it=list.begin()++;
-    }
-    ASSERT_EQUALS(list.getSize(),90);
+    return end();
 }
-static void listEqual(){
-    List<string> list1;
-    List<string> list2;
-    list1.insert("My");
-    list2.insert("My");
-    list1.insert("Name");
-    list2.insert("Name");
-    list1.insert("is");
-    list2.insert("is");
-    list1.insert("Slim");
-    list2.insert("Slim");
-    list1.insert("Shady");
-    list2.insert("Shady");
-    ASSERT_TRUE(list1==list2);
-    ASSERT_FALSE(list1!=list2);
-    list1.insert("Please");
-    ASSERT_TRUE(list1!=list2);
-    ASSERT_FALSE(list1==list2);
-    list2.insert("Please");
-    ASSERT_TRUE(list1==list2);
-    ASSERT_FALSE(list1!=list2);
-    List<int> int_list1;
-    List<int> int_list2;
-    for (int i=1;i<=50;i++){
-        int_list1.insert(i);
-        int_list2.insert(i);
+template <class T>
+template <typename Compare>
+void List<T>::sort(const Compare &compare) {
+    T tempData;
+    Iterator currentTail = Iterator(this, tail);
+    for (int i = 0; i < size; i++) {
+        Iterator it = begin();
+        while (it.current!= currentTail.current) {
+            T &x=*it;
+            T &y=*(++it);
+            bool compare_=compare(x,y);
+            if (!(compare_)) {
+                tempData=x;
+                x=y;
+                y=tempData;
+            }
+        }
+        currentTail--;
     }
-    ASSERT_TRUE(int_list1==int_list2);
-    ASSERT_FALSE(int_list1!=int_list2);
-    int_list1.insert(600);
-    ASSERT_TRUE(int_list1!=int_list2);
-    ASSERT_FALSE(int_list1==int_list2);
 }
-static void listPredicate() {
-    List<int> int_list;
-    for (int i=0;i<=1000;i+=4){
-        int_list.insert(i);
+
+template <class T>
+List<T>::List(const List<T>& list):size(0),head(NULL),tail(NULL){
+    for (Iterator it=list.begin(); it.current!=NULL; it++){
+        this->insert(*it);
     }
-    List<int>::Iterator it = int_list.find(SameAs(16));
-    ASSERT_TRUE(*it==16);
-    it = int_list.find(SameAs(996));
-    ASSERT_TRUE(*it==996);
-    it = int_list.find(SameAs(555));
-    ASSERT_TRUE(it==int_list.end());
-    List<string> string_list;
-    string s1=("Diamond");
-    string_list.insert(s1);
-    string s2="Gold";
-    string_list.insert(s2);
-    string s3="Silver";
-    string_list.insert(s3);
-    string s4="Bronze";
-    string_list.insert(s4);
-    string s5="Steel";
-    string_list.insert(s5);
-    List<string>::Iterator it2 = string_list.find(SameAs(s1));
-    ASSERT_TRUE(it2==(string_list.begin()));
-    it2=string_list.find(SameAs(s2));
-    ASSERT_TRUE(it2==++(string_list.begin()));
-    it2=string_list.find(SameAs(s3));
-    ASSERT_TRUE(it2==++++(string_list.begin()));
-    it2=string_list.find(SameAs(s4));
-    ASSERT_TRUE(it2==++++++(string_list.begin()));
-    it2= string_list.find(SameAs(s5));
-    ASSERT_TRUE(it2==++++++++(string_list.begin()));
-    it2=string_list.find(SameAs("1234"));
-    ASSERT_TRUE(it2==string_list.end());
 }
-static void listSort(){
-    List<string> string_list;
-    abc_insert(string_list);
-    string_list.sort(std::less<string>());
-    List<string>::Iterator it1 = string_list.begin();
-    List<string>::Iterator it2 = string_list.begin();
-    it2++;
-    std::less<string> is_less;
-    for (int i=0;i<25;i++){
-        ASSERT_TRUE(is_less(*it1, *it2));
+
+
+template <class T>
+List<T>& List<T>::operator=(const List<T>& list) {///destractor/////////////////////////???
+    if (*this==list){
+        return *this;
+    }
+    while(head!=NULL){
+        node* to_delete=head;
+        head=head->next;
+        delete to_delete;
+        size--;
+    }
+    for (Iterator it=list.begin(); it.current!=NULL; it++){
+        this->insert(*it);
+    }
+    return *this;
+}
+
+template<class T>
+bool List<T>::operator==(const List& list) const {
+    if (list.size!=this->size){
+        return false;
+    }
+    Iterator it1 = list.begin();
+    Iterator it2 = this->begin();
+    while ((it1.current != NULL) && (it2.current != NULL)) {
+        if ((it1.current->data) != (it2.current->data)) {
+            return false;
+        }
         it1++;
         it2++;
     }
-    it1=string_list.begin();
-    ASSERT_TRUE(*it1=="a");
-    ++++++++++it1;
-    ASSERT_TRUE(*it1=="f");
-    ++++++++++it1;
-    ASSERT_TRUE(*it1=="k");
+    return true;
+}
+
+template <class T>
+bool List<T>::operator!=(const List& list) const {
+    return !(*this==list);
+}
+template <class T>
+int List<T>::getSize() {
+    return size;
 }
 
 
-int main(){
-    RUN_TEST(listInsert);
-    RUN_TEST(listRemove);
-    RUN_TEST(listIterator);
-    RUN_TEST(listException);
-    RUN_TEST(listBegin);
-    RUN_TEST(listSize);
-    RUN_TEST(listEqual);
-    RUN_TEST(listPredicate);
-    RUN_TEST(listSort);
-}
+//iterator functions
+
+
+#endif //HW4_LIST_H
