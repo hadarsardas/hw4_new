@@ -1,5 +1,7 @@
 #include "../KidsRoom.h"
 #include "../mtmtest.h"
+using mtm::escaperoom::Enigma;
+using mtm::escaperoom::Difficulty;
 
 static void makeRooms(){
     KidsRoom bob=KidsRoom((char*)"SpongeBob", 60, 10, 7, 10);
@@ -52,10 +54,29 @@ static void prinCheck(){
     KidsRoom lilo=KidsRoom((char*)"Lilo", 60, 8, 3, 12);
     ASSERT_PRINT("Kids Room: Lilo (60/8/3/12)", lilo);
 }
+static void copyConst() {
+    KidsRoom smurf = KidsRoom((char *) "The Smurfs", 50, 7, 4, 8);
+    Enigma smurf_enigma = Enigma("blue mystery", (Difficulty) 2);
+    Enigma smurf_enigma2 = Enigma("deep in the forest", (Difficulty) 1);
+    Enigma smurf_enigma3 = Enigma("gargamel",(Difficulty)0);
+    smurf.addEnigma(smurf_enigma);
+    smurf.addEnigma(smurf_enigma2);
+    smurf.addEnigma(smurf_enigma3);
+    KidsRoom smurf2 = KidsRoom(smurf);
+    ASSERT_EQUALS(smurf2.getMaxTime(), 50);
+    ASSERT_EQUALS(smurf2.getAgeLimit(), 8);
+    ASSERT_EQUALS(smurf2.getMaxParticipants(), 4);
+    ASSERT_EQUALS(smurf2.level(), 7);
+    ASSERT_EQUALS(smurf2.getName(), (char *) "The Smurfs");
+    std::vector<Enigma> riddles_smurf1 =smurf.getAllEnigmas();
+    std::vector<Enigma> riddles_smurf =smurf2.getAllEnigmas();
+    ASSERT_TRUE(riddles_smurf1==riddles_smurf);
+}
 
 int main(){
     RUN_TEST(makeRooms);
     RUN_TEST(ageLimit);
     RUN_TEST(rateCheck);
     RUN_TEST(prinCheck);
+    RUN_TEST(copyConst);
 }
