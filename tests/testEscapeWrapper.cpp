@@ -4,11 +4,12 @@
 #include <assert.h>
 #include "../Exceptions.h"
 using namespace std;
+using mtm::escaperoom::Enigma;
 
 using namespace mtm::escaperoom;
 
 
-void testOperators() {
+static void testOperators() {
 
     EscapeRoomWrapper Escapy2((char*)"technionEscapy2",35,4,6);
     EscapeRoomWrapper Escapy3((char*)"technionEscapy2",35,2,3);
@@ -30,7 +31,7 @@ void testOperators() {
 
 }
 
-void testValidRate() {
+static void testValidRate() {
     EscapeRoomWrapper Escapy((char*)"technionEscapy",50,4,6);
     ASSERT_THROWS(EscapeRoomIllegalRateException,Escapy.rate(6));
     ASSERT_THROWS(EscapeRoomIllegalRateException,Escapy.rate(-2));
@@ -39,7 +40,7 @@ void testValidRate() {
     ASSERT_EQUALS(Escapy.getRate(),1);
 
 }
-void getsTestConstractor4params(){
+static void getsTestConstractor4params(){
     EscapeRoomWrapper Escapy((char*)"technionEscapy",50,4,5);
     ASSERT_EQUALS(Escapy.getName(),"technionEscapy");
     ASSERT_EQUALS(Escapy.level(),4);
@@ -47,7 +48,7 @@ void getsTestConstractor4params(){
     ASSERT_EQUALS(Escapy.getMaxParticipants(),5);
     ASSERT_EQUALS(Escapy.getRate(),0);
 }
-void getsTestConstractor2params() {
+static void getsTestConstractor2params() {
     EscapeRoomWrapper Escapy((char*)"technionEscapy2",2);
     ASSERT_EQUALS(Escapy.getName(),"technionEscapy2");
     ASSERT_EQUALS(Escapy.level(),2);
@@ -55,7 +56,7 @@ void getsTestConstractor2params() {
     ASSERT_EQUALS(Escapy.getMaxParticipants(),6);
     ASSERT_EQUALS(Escapy.getRate(),0);
 }
-void copyTest(){
+static void copyTest(){
     EscapeRoomWrapper Escapy((char*)"technionEscapy",2);
     EscapeRoomWrapper Escapy2=EscapeRoomWrapper(Escapy);
     ASSERT_EQUALS(Escapy.getName(),Escapy2.getName());
@@ -63,7 +64,7 @@ void copyTest(){
     ASSERT_EQUALS(Escapy.getMaxParticipants(),Escapy2.getMaxParticipants());
     ASSERT_EQUALS(Escapy.getMaxTime(),Escapy2.getMaxTime());
 }
-void assignmentTest(){
+static void assignmentTest(){
     EscapeRoomWrapper Escapy1((char*)"technionEscapy",20,6,8);
     EscapeRoomWrapper Escapy2((char*)"technionEscapy2",50,4,5);
     ASSERT_EQUALS(Escapy2.getName(),"technionEscapy2");
@@ -75,13 +76,33 @@ void assignmentTest(){
     ASSERT_EQUALS(Escapy2.getMaxTime(),20);
 }
 
-void printTest(){
+static void printTest(){
     EscapeRoomWrapper Escapy1((char*)"technionEscapy",20,6,8);
     EscapeRoomWrapper Escapy2((char*)"technionEscapy2",50,4,5);
     ASSERT_PRINT("technionEscapy (20/6/8)",Escapy1);
     ASSERT_PRINT("technionEscapy2 (50/4/5)",Escapy2);
 }
-
+static void copyConst(){
+    EscapeRoomWrapper Escapy1((char*)"technionEscapy",20,6,8);
+    Enigma enigma = mtm::escaperoom::Enigma("mystery", (Difficulty) 2);
+    Enigma enigma2 = mtm::escaperoom::Enigma("mystery2", (Difficulty) 2);
+    Enigma enigma3 = mtm::escaperoom::Enigma("mystery3", (Difficulty) 2);
+    Enigma enigma4 = mtm::escaperoom::Enigma("mystery4", (Difficulty) 2);
+    Enigma enigma5 = mtm::escaperoom::Enigma("mystery5", (Difficulty) 2);
+    Escapy1.addEnigma(enigma);
+    Escapy1.addEnigma(enigma2);
+    Escapy1.addEnigma(enigma3);
+    Escapy1.addEnigma(enigma4);
+    Escapy1.addEnigma(enigma5);
+    EscapeRoomWrapper Escapy2=EscapeRoomWrapper(Escapy1);
+    ASSERT_EQUALS(Escapy2.level(),6);
+    ASSERT_EQUALS(Escapy2.getMaxTime(),20);
+    ASSERT_EQUALS(Escapy2.getMaxParticipants(),8);
+    ASSERT_EQUALS(Escapy2.getRate(),0);
+    std::vector<Enigma> riddles_smurf =Escapy1.getAllEnigmas();
+    std::vector<Enigma> riddles_smurf2 =Escapy2.getAllEnigmas();
+    ASSERT_TRUE(riddles_smurf==riddles_smurf2);
+}
 
 int main() {
     RUN_TEST(testOperators);
@@ -91,4 +112,5 @@ int main() {
     RUN_TEST(copyTest);
     RUN_TEST(assignmentTest);
     RUN_TEST(printTest);
+    RUN_TEST(copyConst);
 }
