@@ -1,6 +1,9 @@
 #include "../ScaryRoom.h"
 #include "../mtmtest.h"
 
+using mtm::escaperoom::Enigma;
+using mtm::escaperoom::Difficulty;
+
 static void makeRooms(){
     ScaryRoom ring=ScaryRoom((char*)"The ring", 60, 10, 7, 10, 4);
     ASSERT_EQUALS(ring.level(), 10);
@@ -51,10 +54,35 @@ static void printCheck(){
     ScaryRoom chaki=ScaryRoom((char*)"Chaki", 40, 10, 5, 18, 4);
     ASSERT_PRINT("Scary Room: Chaki (40/10/5/18)", chaki);
 }
+static void copyCtor(){
+    ScaryRoom mtm=ScaryRoom((char*)"MATAM", 40, 10, 2, 18, 5);
+    Enigma scary_enigma1 = Enigma("scary1", (Difficulty)0);
+    Enigma scary_enigma2 = Enigma("scary2",(Difficulty)1);
+    Enigma scary_enigma3 = Enigma("scary3",(Difficulty)0);
+    Enigma scary_enigma4 = Enigma("scary4",(Difficulty)2);
+    Enigma scary_enigma5 = Enigma("scary5",(Difficulty)1);
+    Enigma scary_enigma6 = Enigma("scary6",(Difficulty)0);
+    mtm.addEnigma(scary_enigma1);
+    mtm.addEnigma(scary_enigma2);
+    mtm.addEnigma(scary_enigma3);
+    mtm.addEnigma(scary_enigma4);
+    mtm.addEnigma(scary_enigma5);
+    mtm.addEnigma(scary_enigma6);
+    ScaryRoom mtm2=ScaryRoom(mtm);
+    ASSERT_EQUALS(mtm2.getMaxTime(), 40);
+    ASSERT_EQUALS(mtm2.level(), 10);
+    ASSERT_EQUALS(mtm2.getAgeLimit(),18);
+    ASSERT_EQUALS(mtm2.getMaxParticipants(),2);
+    ASSERT_EQUALS(mtm2.getName(),(char*)"MATAM");
+    std::vector<Enigma> riddles_mtm1 =mtm.getAllEnigmas();
+    std::vector<Enigma> riddles_mtm2 =mtm2.getAllEnigmas();
+    ASSERT_TRUE(riddles_mtm1==riddles_mtm2);
+}
 
 int main(){
     RUN_TEST(makeRooms);
     RUN_TEST(ageLimit);
     RUN_TEST(rateCheck);
     RUN_TEST(printCheck);
+    RUN_TEST(copyCtor);
 }
